@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "satdb"
+version = "0.1.0"
+description = "Satellite database"
+authors = ["Your Name <you@example.com>"]
+license = "GNU General Public License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+django = "4.2.11"
+faker = "25.0.1"
+graphene = "3.3"
+graphene-django = "3.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

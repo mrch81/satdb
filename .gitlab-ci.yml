@@ -177,6 +177,7 @@ check_migrations_dj4_2:
   stage: test
   tags:
     - docker
+  image: python:3.8
   allow_failure: false
   dependencies: []
   script:
@@ -204,6 +205,7 @@ pytest_dj4_2:
   stage: test
   tags:
     - docker
+  image: python:3.8
   allow_failure: false
   dependencies: []
   before_script:

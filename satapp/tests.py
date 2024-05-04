@@ -3,10 +3,9 @@
 import logging
 from datetime import date
 
-from django.test import TestCase
-
 # Import
 import graphene
+from django.test import TestCase
 from graphene.test import Client
 
 from .models import Launcher, Owner, Payload, Satellite

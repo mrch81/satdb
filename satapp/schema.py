@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 
-# Imports
-import graphene
 import logging
 
+# Imports
+import graphene
 from graphene_django.types import DjangoObjectType
 
-from .models import Payload
-from .models import Launcher
-from .models import Owner
-from .models import Satellite
-
+from .models import Launcher, Owner, Payload, Satellite
 
 logger = logging.getLogger(__name__)
 
@@ -229,9 +225,3 @@ class Mutation(graphene.ObjectType):
     update_payload = UpdatePayload.Field()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
-
-
-
-
-
-

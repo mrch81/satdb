@@ -3,6 +3,7 @@
 # Imports
 from django.db import models
 
+
 # Model definitions
 class Owner(models.Model):
     """
@@ -52,4 +53,3 @@ class Launcher(models.Model):
 
     def __unicode__(self):
         return "Launcher {}".format(self.launcher_type)
-

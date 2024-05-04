@@ -43,7 +43,7 @@ isort:
   script:
     - echo "This job verifies if python import order are sorted."
     - "echo $(which python ; python -V 2>&1)"
-    - python -m pip install -U isort invoke
+    - python -m pip install -U isort
     - python -m pip freeze > pipfreeze_isort.txt
     - python -m pip check
     - isort --version

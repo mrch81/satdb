@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-from django.core.management.base import BaseCommand
-from django.apps import apps
 import json
 import os
+from random import choice, randint
+
+from django.apps import apps
+from django.core.management.base import BaseCommand
 from faker import Faker
-from random import randint, choice
+
 
 class Command(BaseCommand):
     help = 'Generates test data for Owners, Satellites, Components, and Launchers'

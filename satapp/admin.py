@@ -4,10 +4,7 @@
 
 from django.contrib import admin
 
-from .models import Payload
-from .models import Launcher
-from .models import Owner
-from .models import Satellite
+from .models import Launcher, Owner, Payload, Satellite
 
 # Register your models here.
 

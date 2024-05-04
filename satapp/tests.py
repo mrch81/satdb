@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 
+import logging
+from datetime import date
+
+from django.test import TestCase
+
 # Import
 import graphene
-import logging
-
-from datetime import date
-from django.test import TestCase
 from graphene.test import Client
 
-from .models import Launcher
-from .models import Owner
-from .models import Payload
-from .models import Satellite
+from .models import Launcher, Owner, Payload, Satellite
 from .schema import schema
 
 logger = logging.getLogger(__name__)
@@ -250,8 +248,3 @@ class SatAppTestCase(TestCase):
         self.assertEqual(launcher['launcherType'], 'DeltaV')
         self.assertEqual(launcher['launchDate'], '2025-06-06')
         self.assertEqual(launcher['satellites'][0]['id'], '2')
-
-
-
-
-

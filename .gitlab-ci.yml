@@ -12,7 +12,7 @@ variables:
 # lint stage
 # ############################################################################
 
-check_todo:
+check-todo:
   stage: lint
   image: python:3.8
   tags:
@@ -49,7 +49,7 @@ isort:
         - pipfreeze_isort.txt
         - isort_report.txt
         - isort_errors.txt
-    expire_in: 1 month
+    expire_in: 1 week
 
 flake3_8:
   stage: lint
@@ -71,7 +71,7 @@ flake3_8:
     paths:
         - pipfreeze.flake_3_8.txt
         - flake3.8.log
-    expire_in: 1 month
+    expire_in: 1 week
 
 docstring_check:
   stage: lint
@@ -96,7 +96,7 @@ docstring_check:
     paths:
         - pipfreeze.flake_3_8_docstring_check.txt
         - flake_3_8_docstring_check.log
-    expire_in: 1 month
+    expire_in: 1 week
 
 flake3_10:
   stage: lint
@@ -118,7 +118,7 @@ flake3_10:
     paths:
         - pipfreeze.flake_3_10.txt
         - flake3.10.log
-    expire_in: 1 month
+    expire_in: 1 week
 
 shellcheck:
   stage: lint
@@ -149,7 +149,7 @@ htmlhint:
     when: always
     paths:
         - htmlhint.log
-    expire_in: 1 month
+    expire_in: 1 week
 
 csslint:
   stage: lint
@@ -166,14 +166,14 @@ csslint:
     when: always
     paths:
         - csslint.log
-    expire_in: 1 month
+    expire_in: 1 week
 
 
 # ############################################################################
 # Test stage
 # ############################################################################
 
-check_migrations_dj4_2:
+check-migrations_dj4_2:
   stage: test
   tags:
     - docker
@@ -190,9 +190,8 @@ check_migrations_dj4_2:
     - echo "CHECK MIGRATIONS"
     - echo "PATH is $PATH"
     - touch pytest.status pytest.log
-    - ./manage.py makemigrations
-    - ./manage.py migrate
-    - ./manage.py compress
+    - python manage.py makemigrations
+    - python manage.py migrate
     - unmigrated_cnt=$(./manage.py showmigrations | grep -Eve '\[X\]' | grep -c '\[' ) || true
     - test $unmigrated_cnt = 0
 
@@ -200,9 +199,9 @@ check_migrations_dj4_2:
     when: always
     paths:
         - pipfreeze_check_migrations_dj4_2.txt
-    expire_in: 1 month
+    expire_in: 1 week
 
-pytest_dj4_2:
+django-tests_4_2:
   stage: test
   tags:
     - docker
@@ -239,7 +238,7 @@ pytest_dj4_2:
         - pipfreeze_tst_py38_dj42.txt
         - pytest.log
         - pytest.status
-    expire_in: 1 month
+    expire_in: 1 week
 
 
 # ############################################################################

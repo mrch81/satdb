@@ -180,15 +180,16 @@ check_migrations_dj4_2:
   image: python:3.8
   allow_failure: false
   dependencies: []
-  script:
-    - echo "CHECK MIGRATIONS"
-    - echo "PATH: $PATH"
-    - touch pytest.status pytest.log
+  before_script:
     - apt update
     - pip install -U pip
     - pip install -r requirements.txt -U
     - pip freeze > pipfreeze_check_migrations_dj4_2.txt
-    - pip check
+    - pip check  
+  script:
+    - echo "CHECK MIGRATIONS"
+    - echo "PATH: $PATH"
+    - touch pytest.status pytest.log
     - ./manage.py makemigrations
     - ./manage.py migrate
     - ./manage.py compress
@@ -231,7 +232,6 @@ pytest_dj4_2:
     - test $skip_cnt -le 0
     - test $fail_cnt -le 0
     - "echo test end: $(date +'%Y%-%m-%d %H:%M:%S %s')"
-  environment: test
 
   artifacts:
     when: always

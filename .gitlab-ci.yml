@@ -98,27 +98,11 @@ docstring_check:
         - flake_3_8_docstring_check.log
     expire_in: 1 week
 
-flake3_10:
+mypy:
   stage: lint
-  image: python:3.10
-  tags:
-    - docker
-  allow_failure: false
-  dependencies: []
+  allow_failure: true
   script:
-    - echo "CHECK PEP8 COMPLIANCE AND OTHER POTENTIAL ERRORS (for Py3.10)"
-    - "echo $(which python ; python -V 2>&1)"
-    - pip install -U flake8
-    - pip freeze > pipfreeze.flake_3_10.txt
-    - pip check
-    - find . -type f -name '*.py' | xargs file > fileencodings.log
-    - python -m flake8 . --exclude migrations| tee flake3.10.log
-  artifacts:
-    when: always
-    paths:
-        - pipfreeze.flake_3_10.txt
-        - flake3.10.log
-    expire_in: 1 week
+    - python -m mypy --ignore-missing-imports .
 
 shellcheck:
   stage: lint

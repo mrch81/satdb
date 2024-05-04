@@ -186,7 +186,7 @@ pytst_dj4_2_11:
   allow_failure: false
   dependencies: []
   script:
-    - echo "TODO: not working yet."
+    - "echo TODO: not working yet."
     - touch pytest.status pytest.log
     - apt update
     - pip install -U pip

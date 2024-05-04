@@ -6,10 +6,11 @@ from django.contrib import admin
 
 from .models import Launcher, Owner, Payload, Satellite
 
-# Register your models here.
+# Admin models here.
+
 
 class SatelliteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'owner' )
+    list_display = ('id', 'name', 'owner')
 
 
 class OwnerAdmin(admin.ModelAdmin):

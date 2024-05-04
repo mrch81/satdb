@@ -35,7 +35,7 @@ class PayloadType(DjangoObjectType):
     class Meta:
         model = Payload
         fields = ('id', 'provider', 'satellite', 'type', 'description')
-        
+
 
 # Query
 
@@ -102,6 +102,7 @@ class CreateOwner(graphene.Mutation):
         owner.save()
         return CreateOwner(owner=owner)
 
+
 class UpdateOwner(graphene.Mutation):
     class Arguments:
         id = graphene.ID(required=True)
@@ -129,18 +130,24 @@ class CreateLauncher(graphene.Mutation):
 
     launcher = graphene.Field(LauncherType)
 
-    def mutate(self, info, satellite_ids, launcher_type, launch_date):
+    def mutate(self,
+               info,
+               satellite_ids,
+               launcher_type,
+               launch_date):
         logger.info("Creating launcher")
         if satellite_ids:
             satellites = Satellite.objects.filter(id__in=satellite_ids)
 
-        launcher = Launcher(launcher_type=launcher_type, launch_date=launch_date)
+        launcher = Launcher(launcher_type=launcher_type,
+                            launch_date=launch_date)
         launcher.save()
         if satellites:
             launcher.satellites.clear()
             launcher.satellites.set(satellites)
             launcher.save()
         return CreateLauncher(launcher=launcher)
+
 
 class UpdateLauncher(graphene.Mutation):
     class Arguments:
@@ -151,7 +158,13 @@ class UpdateLauncher(graphene.Mutation):
 
     launcher = graphene.Field(LauncherType)
 
-    def mutate(self, info, id, launcher_type=None, launch_date=None, satellite_ids=None):
+    def mutate(self,
+               info,
+               id,
+               launcher_type=None,
+               launch_date=None,
+               satellite_ids=None):
+
         launcher = Launcher.objects.get(pk=id)
         if launcher_type is not None:
             launcher.launcher_type = launcher_type
@@ -181,10 +194,14 @@ class CreatePayload(graphene.Mutation):
 
     def mutate(self, info, provider, satellite_id, type, description):
         satellite = Satellite.objects.get(pk=satellite_id)
-        payload = Payload(provider=provider, satellite=satellite, type=type, description=description)
+        payload = Payload(provider=provider,
+                          satellite=satellite,
+                          type=type,
+                          description=description)
         payload.save()
 
         return CreatePayload(payload=payload)
+
 
 class UpdatePayload(graphene.Mutation):
     class Arguments:
@@ -193,12 +210,18 @@ class UpdatePayload(graphene.Mutation):
         satellite_id = graphene.Int()
         type = graphene.String()
         description = graphene.String()
-    
+
     # Define the PayloadType to be returned after mutation
     payload = graphene.Field(PayloadType)
-    
-    def mutate(
-          self, info, id, provider=None, satellite_id=None, type=None, description=None):
+
+    def mutate(self,
+               info,
+               id,
+               provider=None,
+               satellite_id=None,
+               type=None,
+               description=None):
+
         payload = Payload.objects.get(pk=id)
         if provider is not None:
             payload.provider = provider
@@ -208,7 +231,7 @@ class UpdatePayload(graphene.Mutation):
             payload.type = type
         if description is not None:
             payload.description = description
-        
+
         payload.save()
 
         return UpdatePayload(payload=payload)
@@ -223,5 +246,6 @@ class Mutation(graphene.ObjectType):
     update_launcher = UpdateLauncher.Field()
     create_payload = CreatePayload.Field()
     update_payload = UpdatePayload.Field()
+
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

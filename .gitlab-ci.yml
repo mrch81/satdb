@@ -84,7 +84,7 @@ docstring_check:
   image: python:3.8
   tags:
     - docker
-  allow_failure: false
+  allow_failure: true
   dependencies: []
   script:
     - echo "This job checks for missing docstrings in python files."

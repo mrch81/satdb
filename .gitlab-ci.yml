@@ -47,7 +47,7 @@ isort:
     - python -m pip freeze > pipfreeze_isort.txt
     - python -m pip check
     - isort --version
-    - isort --check
+    - isort . --check
 
   artifacts:
     when: always

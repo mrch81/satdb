@@ -26,7 +26,7 @@ check_todo:
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job tests something, but takes more time than test-job1."
+    - echo "This job traces for TODOs in the code."
     - git grep TODO | grep -v '\.gitlab-ci.yml' > todo_lines.txt || true
     - todo_lines=$(cat todo_lines.txt | wc -l)
     - echo "====== $todo_lines files with HOTFIX ======="
@@ -41,13 +41,13 @@ isort:
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job tests something, but takes more time than test-job1."
+    - echo "This job verifies if python import order are sorted."
     - "echo $(which python ; python -V 2>&1)"
     - python -m pip install -U isort invoke
     - python -m pip freeze > pipfreeze_isort.txt
     - python -m pip check
-    - inv isort --version
-    - inv isort --check
+    - isort --version
+    - isort --check
 
   artifacts:
     when: always
@@ -65,7 +65,7 @@ flake3_8:
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job tests something, but takes more time than test-job1."
+    - echo "This job checks for PEP8 compliance and other potential error (for Py3.8)"
     - "echo $(which python ; python -V 2>&1)"
     - pip install -U flake8 configparser
     - pip freeze > pipfreeze.flake_3_8.txt
@@ -87,7 +87,7 @@ docstring_check:
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job tests something, but takes more time than test-job1."
+    - echo "This job checks for missing docstrings in python files."
     - "echo $(which python ; python -V 2>&1)"
     - pip install -U flake8-docstrings
     - pip freeze > pipfreeze.flake_3_8_docstring_check.txt
@@ -112,7 +112,7 @@ flake3_10:
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job tests something, but takes more time than test-job1."
+    - echo "This job checks for PEP8 compliance and other potential error (for Py3.10)"
     - "echo $(which python ; python -V 2>&1)"
     - pip install -U flake8 configparser
     - pip freeze > pipfreeze.flake_3_10.txt
@@ -126,19 +126,19 @@ flake3_10:
         - flake3.10.log
     expire_in: 1 month
 
-shell_lint:
+shellcheck:
   stage: lint
+  image: koalaman/shellcheck-alpine:latest
   tags:
     - docker
-  before_script: []
+  before_script:
+    - apk update
+    - apk add git
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - shellcheck *.sh scripts/*.sh | tee check.txt || true
-    - errors=$(grep ' SC[0-9]' check.txt | wc -l)
-    - echo "got $errors shellcheck errors"
-    - test "$errors" -le 0
+    - echo "This job checks shell scripts for potential errors."
+    - git ls-files --exclude='*.sh' --ignored -c -z | xargs -0r shellcheck
 
 htmlhint:
   stage: lint
@@ -147,7 +147,7 @@ htmlhint:
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job tests something, but takes more time than test-job1."
+    - echo "This job performs static code analysis of all html files."
     - touch htmlhint.log
     - "htmlhint . > htmlhint.log || true"
     - echo "=== first 100 lines of issues" ; cat htmlhint.log || true
@@ -164,7 +164,7 @@ csslint:
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job tests something, but takes more time than test-job1."
+    - echo "This job checks for potential errors in CSS files"
     - touch csslint.log
     - "csslint . > csslint.log || true"
     - echo "=== CSSLint issues" ; cat csslint.log || true
@@ -186,7 +186,7 @@ pytst_dj4_2_11:
   allow_failure: false
   dependencies: []
   script:
-    - "echo TODO: not working yet."
+    - echo "This job launches unit tests."
     - touch pytest.status pytest.log
     - apt update
     - pip install -U pip
@@ -242,7 +242,7 @@ mk_doc:
     - ls -lH mynode/bin/*
     - npm install -g less
   script:
-    - echo "This job tests something, but takes more time than test-job1."
+    - echo "This job should create spinx documentation."
     - export DJANGO_SETTINGS_MODULE="webfw.settings.search_settings"
     - export OIDC_RP_CLIENT_ID=mhcare_test
     - export OIDC_RP_CLIENT_SECRET=1236

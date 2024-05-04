@@ -5,10 +5,10 @@ from datetime import date
 
 # Import
 from django.test import TestCase
-from graphene.test import Client
 
-from .models import Launcher, Owner, Payload, Satellite
-from .schema import schema
+from graphene.test import Client
+from satapp.models import Launcher, Owner, Payload, Satellite
+from satapp.schema import schema
 
 logger = logging.getLogger(__name__)
 
@@ -102,7 +102,7 @@ class SatAppTestCase(TestCase):
         self.assertEqual(len(payloads), 1)
         self.assertEqual(payloads[0]['provider'], 'SpaceX')
         self.assertEqual(payloads[0]['type'], 'Camera')
-        self.assertEqual(payloads[0]['description'], 'High-resolution camera')
+        self.assertEqual(payloads[0]['description'], '30M camera')
         self.assertEqual(payloads[0]['satellite']['name'], 'Hubble')
 
     def test_create_payload_mutation(self):

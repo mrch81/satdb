@@ -5,8 +5,7 @@ import logging
 # Imports
 import graphene
 from graphene_django.types import DjangoObjectType
-
-from .models import Launcher, Owner, Payload, Satellite
+from satapp.models import Launcher, Owner, Payload, Satellite
 
 logger = logging.getLogger(__name__)
 

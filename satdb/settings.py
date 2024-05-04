@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from typing import List
 
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
+    'channels',
     'satapp',
 ]
 
@@ -52,6 +54,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'satdb.urls'
+
+SATELLITE_FEED_URL = os.environ.get("SATELLITE_FEED_URL",
+                                    "https://tle.ivanstanojevic.me/api/tle/")
 
 TEMPLATES = [
     {
@@ -70,7 +75,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'satdb.wsgi.application'
-
+ASGI_APPLICATION = 'satdb.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

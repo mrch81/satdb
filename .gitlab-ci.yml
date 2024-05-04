@@ -188,7 +188,7 @@ check_migrations_dj4_2:
     - pip check  
   script:
     - echo "CHECK MIGRATIONS"
-    - echo "PATH: $PATH"
+    - echo "PATH is $PATH"
     - touch pytest.status pytest.log
     - ./manage.py makemigrations
     - ./manage.py migrate
@@ -217,7 +217,7 @@ pytest_dj4_2:
     - pip check
   script:
     - echo "RUNNING UNIT TESTS"
-    - echo "PATH: $PATH"
+    - echo "PATH is $PATH"
     - "echo test start: $(date +'%Y%-%m-%d %H:%M:%S %s')"
     - coverage run manage.py test -v 2 && coverage report | tee -a pytest.log
     - grep -Ee '== .*(failed|passed|skipped|warning|errors).* in .* ==' pytest.log > pytest.status

@@ -4,7 +4,9 @@ import logging
 
 # Imports
 import graphene
+from channels_graphql_ws import Subscription
 from graphene_django.types import DjangoObjectType
+
 from satapp.models import Launcher, Owner, Payload, Satellite
 
 logger = logging.getLogger(__name__)
@@ -247,4 +249,15 @@ class Mutation(graphene.ObjectType):
     update_payload = UpdatePayload.Field()
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+# Subscriptions
+
+class SatelliteSubscription(Subscription):
+    satellite_updated = graphene.Field(SatelliteType)
+
+    async def subscribe_satellite_updated(root, info):
+        return root.subscribe_to_channel("satellite_updated")
+
+
+schema = graphene.Schema(query=Query,
+                         mutation=Mutation,
+                         subscription=SatelliteSubscription)

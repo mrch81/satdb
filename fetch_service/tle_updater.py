@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-import threading
 
 import aiohttp
 from satapp.models import Satellite
@@ -27,22 +26,20 @@ class TLEUpdater:
             # Process the fetched data and update the satellites
             for data in tle_data:
                 logger.info("Fetched satellite: %s", data)
-                satellite, _ = Satellite.objects.get_or_create(
-                                                    name=data['name'])
+                satellite, _ = Satellite.objects.get_or_create(name=data['name'])  # noqa: E501
                 # Update satellite properties with data from tle_data
                 satellite.save()
                 # Publish updates to subscribers
                 await SatelliteSubscription.broadcast(
-                           channel="satellite_updated",
-                           payload={"satellite_updated": satellite.id})
+                                   channel="satellite_updated",
+                                   payload={"satellite_updated": satellite.id})
             await asyncio.sleep(60)  # Fetch data every 60 seconds
 
-    def start(self):
-        t = threading.Thread(target=self._update_loop)
-        t.daemon = True
-        t.start()
+    async def run(self):
+        await self.update_satellites()
 
-    def _update_loop(self):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.update_satellites())
+
+if __name__ == "__main__":
+    print("Run TLE fetcher")
+    tle_updater = TLEUpdater()
+    asyncio.run(tle_updater.run())

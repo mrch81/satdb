@@ -5,8 +5,8 @@ from datetime import date
 
 # Import
 from django.test import TestCase
-
 from graphene.test import Client
+
 from satapp.models import Launcher, Owner, Payload, Satellite
 from satapp.schema import schema
 

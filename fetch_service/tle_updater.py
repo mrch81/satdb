@@ -4,6 +4,7 @@ import asyncio
 import logging
 
 import aiohttp
+
 from satapp.models import Satellite
 from satapp.schema import SatelliteSubscription
 from satdb.settings import SATELLITE_FEED_URL

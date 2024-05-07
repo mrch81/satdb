@@ -257,6 +257,8 @@ class SatelliteSubscription(Subscription):
     async def subscribe_satellite_updated(root, info):
         return root.subscribe_to_channel("satellite_updated")
 
+    async def publish(self, info, payload, **kwargs):
+        return payload
 
 schema = graphene.Schema(query=Query,
                          mutation=Mutation,

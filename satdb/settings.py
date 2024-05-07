@@ -57,6 +57,11 @@ ROOT_URLCONF = 'satdb.urls'
 
 SATELLITE_FEED_URL = os.environ.get("SATELLITE_FEED_URL",
                                     "https://tle.ivanstanojevic.me/api/tle/")
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 TEMPLATES = [
     {

@@ -31,7 +31,7 @@ class Satellite(models.Model):
     line2 = models.CharField(max_length=69, null=True, blank=True)
     owner = models.ForeignKey(Owner,
                               related_name='satellites',
-                              on_delete=models.CASCADE)
+                              on_delete=models.SET_NULL, null=True, blank=True)
 
     def __unicode__(self):
         return "{}".format(self.name)

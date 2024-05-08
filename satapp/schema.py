@@ -258,6 +258,7 @@ class SatelliteSubscription(Subscription):
         return root.subscribe_to_channel("satellite_updated")
 
     async def publish(self, info, payload, **kwargs):
+        logger.debug("Publishing payload: %r", payload)
         return payload
 
 schema = graphene.Schema(query=Query,

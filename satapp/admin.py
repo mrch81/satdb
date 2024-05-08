@@ -10,7 +10,7 @@ from .models import Launcher, Owner, Payload, Satellite
 
 
 class SatelliteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'owner')
+    list_display = ('id', 'name', 'sat_id', 'tle_date', 'line1', 'line2')
 
 
 class OwnerAdmin(admin.ModelAdmin):

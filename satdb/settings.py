@@ -10,9 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import logging
 import os
 from pathlib import Path
 from typing import List
+
+logging.basicConfig(level=logging.INFO)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,8 +58,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'satdb.urls'
 
+FETCH_TLE_FREQUENCY = 60  # Fetch TLE every 1 hour
 SATELLITE_FEED_URL = os.environ.get("SATELLITE_FEED_URL",
-                                    "https://tle.ivanstanojevic.me/api/tle/")
+                                    "https://data.ivanstanojevic.me/api/tle/?search=yam-")
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',

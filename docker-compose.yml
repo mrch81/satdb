@@ -9,10 +9,11 @@ services:
     ports:
       - "8000:8000"
 
-  worker:
+  tle_fetcher:
+    depends_on:
+      - backend
     build: .
     command: python /code/fetch_service/tle_updater.py
     volumes:
       - .:/code
-    environment:
-      - PYTHONPATH=/code/
+

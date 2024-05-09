@@ -3,23 +3,20 @@
 import asyncio
 import json
 import logging
+import os
 
 import aiohttp
-import os
 import django
-
-from asgiref.sync import async_to_sync
-from asgiref.sync import sync_to_async
-from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync, sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from channels.layers import get_channel_layer
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "satdb.settings")
 django.setup()
 
 from satapp.models import Satellite
 from satapp.schema import SatelliteSubscription
-from satdb.settings import FETCH_TLE_FREQUENCY
-from satdb.settings import SATELLITE_FEED_URL
+from satdb.settings import FETCH_TLE_FREQUENCY, SATELLITE_FEED_URL
 
 logger = logging.getLogger(__name__)
 

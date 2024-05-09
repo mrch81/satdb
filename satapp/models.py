@@ -25,7 +25,7 @@ class Satellite(models.Model):
     """
 
     name = models.CharField(max_length=100)
-    sat_id = models.IntegerField(null=True)
+    sat_id = models.IntegerField(null=True, unique=True)
     tle_date = models.DateTimeField(null=True, blank=True)
     line1 = models.CharField(max_length=69, null=True, blank=True)
     line2 = models.CharField(max_length=69, null=True, blank=True)

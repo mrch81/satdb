@@ -9,6 +9,26 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 
 
+# Random Line1 (from TLE)
+L1 = ["1 99999U 24029BR  24131.97222222  .00001103 00000-0 33518-4 0  9998",
+      "1 99999U 24029BR  44131.97222222  .00001103 00000-0  33518-4 0 8998",
+      "1 99999U 24029BR  64131.97222222  .00001103 00000-0  33518-4 0 7998",
+      "1 99999U 24029BR  74131.97222222  .00001103 00000-0  33518-4 0 6998",
+      "1 99999U 24029BR  74131.97222222  .00001103 00000-0  33518-4 0 5998",
+      "1 99999U 24029BR  25131.97222222  .00001103 00000-0  33518-4 0 4998",
+      "1 99999U 24029BR  33131.97222222  .00001103 00000-0  33518-4 0 3998",
+     ]
+
+# Random Line2 (from TLE)
+L2 = ["2 99999 53.00000   0.7026 0003481 299.7327   0.3331 15.07816962  1770",
+      "2 99999 53.00000   0.6036 0003481 299.7327   9.3331 15.07816962  2770",
+      "2 99999 53.00000   0.8036 0003481 299.7327  18.3331 15.07816962  3771",
+      "2 99999 53.00000   0.9036 0003481 299.7327  27.3331 15.07816962  4771",
+      "2 99999 53.00000   0.7066 0003481 299.7327  36.3331 15.07816962  5771",
+      "2 99999 53.00000   0.7024 0003481 299.7327  45.3331 15.07816962  6771",
+      "2 99999 53.00000   0.5455 0003481 299.7327  54.3331 15.07816962  7771",
+     ]
+
 class Command(BaseCommand):
     help = 'Generates fixtures for Owners, Satellites, Payloads, and Launchers'
 
@@ -35,13 +55,19 @@ class Command(BaseCommand):
 
         def generate_satellites(num, owners_count):
             satellites = []
+            today = datetime.datetime.today()
+            dates = [today - datetime.timedelta(days=x) for x in range(10)]
             for i in range(num):
                 satellites.append({
                     "model": "satapp.satellite",
                     "pk": i + 1,
                     "fields": {
                         "name": f"{fake.word().capitalize()} Satellite",
-                        "owner": randint(1, owners_count)
+                        "owner": randint(1, owners_count),
+                        "sat_id": randint(11111, num_entries),
+                        "tle_date": choice(dates),
+                        "Line1": choice(L1),
+                        "Line2": choice(L2),
                     }
                 })
             return satellites

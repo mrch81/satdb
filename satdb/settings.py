@@ -59,8 +59,9 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'satdb.urls'
 
 FETCH_TLE_FREQUENCY = 60  # Fetch TLE every 1 hour
-SATELLITE_FEED_URL = os.environ.get("SATELLITE_FEED_URL",
-                                    "https://data.ivanstanojevic.me/api/tle/?search=yam-")
+SATELLITE_FEED_URL = os.environ.get(
+                        "SATELLITE_FEED_URL",
+                        "https://data.ivanstanojevic.me/api/tle/?search=yam-")
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',

@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+"""Generate fixtures for Owners, Satellites, Payloads, and Launchers."""
+
+import datetime
 import json
 import os
 from random import choice, randint
@@ -7,7 +10,6 @@ from random import choice, randint
 from django.apps import apps
 from django.core.management.base import BaseCommand
 from faker import Faker
-
 
 # Random Line1 (from TLE)
 L1 = ["1 99999U 24029BR  24131.97222222  .00001103 00000-0 33518-4 0  9998",
@@ -17,7 +19,7 @@ L1 = ["1 99999U 24029BR  24131.97222222  .00001103 00000-0 33518-4 0  9998",
       "1 99999U 24029BR  74131.97222222  .00001103 00000-0  33518-4 0 5998",
       "1 99999U 24029BR  25131.97222222  .00001103 00000-0  33518-4 0 4998",
       "1 99999U 24029BR  33131.97222222  .00001103 00000-0  33518-4 0 3998",
-     ]
+      ]
 
 # Random Line2 (from TLE)
 L2 = ["2 99999 53.00000   0.7026 0003481 299.7327   0.3331 15.07816962  1770",
@@ -27,12 +29,16 @@ L2 = ["2 99999 53.00000   0.7026 0003481 299.7327   0.3331 15.07816962  1770",
       "2 99999 53.00000   0.7066 0003481 299.7327  36.3331 15.07816962  5771",
       "2 99999 53.00000   0.7024 0003481 299.7327  45.3331 15.07816962  6771",
       "2 99999 53.00000   0.5455 0003481 299.7327  54.3331 15.07816962  7771",
-     ]
+      ]
+
 
 class Command(BaseCommand):
+    """Class to handle django's custom manage command."""
+
     help = 'Generates fixtures for Owners, Satellites, Payloads, and Launchers'
 
     def handle(self, *args, **options):
+        """Generate data and create json."""
         app_config = apps.get_app_config('satapp')
         fixtures_dir = os.path.join(app_config.path, 'fixtures')
 
@@ -152,9 +158,5 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Fixtures generated'))
 
 
-def main():
-    pass
-
-
 if __name__ == "__main__":
-    main()
+    pass

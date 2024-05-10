@@ -1,42 +1,56 @@
 #!/usr/bin/env python
 
+"""Unit test for fetcher_service."""
+import asyncio
 import logging
-import pytest
-from unittest.mock import patch, MagicMock
-from asgiref.sync import sync_to_async
-from fetch_service.tle_updater import TLEUpdater
+from typing import Any, Dict
+from unittest.mock import AsyncMock, MagicMock, patch
 
-# Constants used in tests
+import pytest
+
+from fetch_service.tle_updater import TLEUpdater
 from satdb.settings import FETCH_TLE_FREQUENCY, SATELLITE_FEED_URL
 
 logger = logging.getLogger(__name__)
 
 
-# Fixture for creating a TLEUpdater instance
 @pytest.fixture
 def tle_updater() -> TLEUpdater:
+    """Fixture TLEUpdater instance."""
     return TLEUpdater()
 
-# Test for the asynchronous fetch_tle_data method
+
 @pytest.mark.asyncio
 @patch('your_module.aiohttp.ClientSession')
-async def test_fetch_tle_data(mock_session: MagicMock, tle_updater: TLEUpdater) -> None:
+async def test_fetch_tle_data(mock_session: MagicMock,
+                              tle_updater: TLEUpdater) -> None:
+    """Test for the asynchronous fetch_tle_data method."""
     # Setup mock response
     mock_response = MagicMock()
     mock_response.json.return_value = asyncio.Future()
     mock_response.json.return_value.set_result({
-        'member': [{'name': 'ISS', 'satelliteId': '25544', 'date': '2021-01-01', 'line1': '1 25544U', 'line2': '2 25544'}]
+        'member': [{'name': 'ISS',
+                    'satelliteId': '25544',
+                    'date': '2021-01-01',
+                    'line1': '1 25544U',
+                    'line2': '2 25544'}]
     })
-    mock_session.return_value.__aenter__.return_value.get.return_value = mock_response
+    mock_session.return_value.__aenter__.return_value.get.return_value = mock_response  # noqa: E501
 
     # Execute
     result: Dict[str, Any] = await tle_updater.fetch_tle_data()
-    
+
     # Verify
     assert result == {
-        'member': [{'name': 'ISS', 'satelliteId': '25544', 'date': '2021-01-01', 'line1': '1 25544U', 'line2': '2 25544'}]
+        'member': [{'name': 'ISS',
+                    'satelliteId': '25544',
+                    'date': '2021-01-01',
+                    'line1': '1 25544U',
+                    'line2': '2 25544'}]
     }
-    mock_session.return_value.__aenter__.return_value.get.assert_called_once_with(TEST_SATELLITE_FEED_URL)
+
+    mock_session.return_value.__aenter__.return_value.get.assert_called_once_with(SATELLITE_FEED_URL)  # noqa: E501
+
 
 # Test for the asynchronous update_satellites method
 @pytest.mark.asyncio
@@ -49,6 +63,7 @@ async def test_update_satellites(
     mock_sleep: AsyncMock,
     tle_updater: TLEUpdater
 ) -> None:
+    """Test for the asynchronous update_satellites method."""
     # Setup mocks
     mock_fetch_tle_data.return_value = asyncio.Future()
     mock_fetch_tle_data.return_value.set_result({
@@ -56,10 +71,9 @@ async def test_update_satellites(
     })
     mock_update_satellite.return_value = asyncio.Future()
     mock_update_satellite.return_value.set_result(None)
-    
-    # Testing the loop might require controlling the loop or modifying the class for testability
-    # For simplicity, let's assume we only run one loop iteration for the test
-    mock_sleep.side_effect = asyncio.CancelledError()  # Stop loop after one iteration
+
+    # Stop loop after 1 iteration
+    mock_sleep.side_effect = asyncio.CancelledError()
 
     # Execute
     with pytest.raises(asyncio.CancelledError):

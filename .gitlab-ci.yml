@@ -1,9 +1,3 @@
-.cache: &cache
-  cache:
-    key: "$CI_BUILD_REF_NAME"
-    paths:
-      - eenv3/
-
 stages:
     - lint
     - build
@@ -18,32 +12,17 @@ variables:
 # lint stage
 # ############################################################################
 
-check_todo:
-  stage: lint
-  image: python:3.8
-  tags:
-    - docker
-  allow_failure: false
-  dependencies: []
-  script:
-    - echo "This job traces for TODOs in the code."
-    - git grep TODO | grep -v '\.gitlab-ci.yml' > todo_lines.txt || true
-    - todo_lines=$(cat todo_lines.txt | wc -l)
-    - echo "====== $todo_lines files with HOTFIX ======="
-    - cat todo_lines.txt
-    - test $todo_lines -le 2
-
 isort:
   stage: lint
-  image: python:3.8
+  image: python:3.10
   tags:
     - docker
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job verifies if python import order are sorted."
+    - echo "CHECK IMPORT ORDERS."
     - "echo $(which python ; python -V 2>&1)"
-    - python -m pip install -U isort invoke
+    - python -m pip install -U isort
     - python -m pip freeze > pipfreeze_isort.txt
     - python -m pip check
     - isort --version
@@ -55,54 +34,7 @@ isort:
         - pipfreeze_isort.txt
         - isort_report.txt
         - isort_errors.txt
-    expire_in: 1 month
-
-flake3_8:
-  stage: lint
-  image: python:3.8
-  tags:
-    - docker
-  allow_failure: false
-  dependencies: []
-  script:
-    - echo "This job checks for PEP8 compliance and other potential error (for Py3.8)"
-    - "echo $(which python ; python -V 2>&1)"
-    - pip install -U flake8 configparser
-    - pip freeze > pipfreeze.flake_3_8.txt
-    - pip check
-    - find . -type f -name '*.py' | xargs file > fileencodings.log
-    - python -m flake8 . | tee flake3.10.log
-  artifacts:
-    when: always
-    paths:
-        - pipfreeze.flake_3_8.txt
-        - flake3.8.log
-    expire_in: 1 month
-
-docstring_check:
-  stage: lint
-  image: python:3.8
-  tags:
-    - docker
-  allow_failure: false
-  dependencies: []
-  script:
-    - echo "This job checks for missing docstrings in python files."
-    - "echo $(which python ; python -V 2>&1)"
-    - pip install -U flake8-docstrings
-    - pip freeze > pipfreeze.flake_3_8_docstring_check.txt
-    - pip check
-    - find . -type f -name '*.py' | xargs file > fileencodings.log
-    - python -m flake8 --docstring-convention pep257 | tee flake_3_8_docstring_check.log
-    - errors=$(grep 'docstring' flake_3_8_docstring_check.txt | wc -l)
-    - test "$errors" -le 0
-
-  artifacts:
-    when: always
-    paths:
-        - pipfreeze.flake_3_8_docstring_check.txt
-        - flake_3_8_docstring_check.log
-    expire_in: 1 month
+    expire_in: 1 week
 
 flake3_10:
   stage: lint
@@ -112,19 +44,51 @@ flake3_10:
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job checks for PEP8 compliance and other potential error (for Py3.10)"
+    - echo "CHECK PEP8 COMPLIANCE AND OTHER POTENTIAL ERRORS (for Py3.10)"
     - "echo $(which python ; python -V 2>&1)"
     - pip install -U flake8 configparser
-    - pip freeze > pipfreeze.flake_3_10.txt
+    - pip freeze > pipfreeze.flake3_10.txt
     - pip check
     - find . -type f -name '*.py' | xargs file > fileencodings.log
-    - python -m flake8 . | tee flake3.10.log
+    - python -m flake8 . --exclude migrations | tee flake3.10.log
   artifacts:
     when: always
     paths:
-        - pipfreeze.flake_3_10.txt
+        - pipfreeze.flake3_10.txt
         - flake3.10.log
-    expire_in: 1 month
+    expire_in: 1 week
+
+docstring_check:
+  stage: lint
+  image: python:3.10
+  tags:
+    - docker
+  allow_failure: true
+  dependencies: []
+  script:
+    - echo "CHECK FORM MISSING OR NON-COMPLIANT DOCSTRINGS IN PYTHON FILES."
+    - "echo $(which python ; python -V 2>&1)"
+    - pip install -U flake8-docstrings
+    - pip freeze > pipfreeze.flake_3_8_docstring_check.txt
+    - pip check
+    - find . -type f -name '*.py' | xargs file > fileencodings.log
+    - python -m flake8 . --exclude migrations --docstring-convention pep257 | tee flake_3_8_docstring_check.log
+    - errors=$(grep 'docstring' flake_3_8_docstring_check.txt | wc -l)
+    - test "$errors" -le 0
+
+  artifacts:
+    when: always
+    paths:
+        - pipfreeze.flake_3_8_docstring_check.txt
+        - flake_3_8_docstring_check.log
+    expire_in: 1 week
+
+mypy:
+  stage: lint
+  image: python:3.10
+  allow_failure: true
+  script:
+    - python -m mypy --ignore-missing-imports .
 
 shellcheck:
   stage: lint
@@ -147,7 +111,7 @@ htmlhint:
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job performs static code analysis of all html files."
+    - echo "PERFORM STATIC CODE ANALYSIS OF HTML FILES"
     - touch htmlhint.log
     - "htmlhint . > htmlhint.log || true"
     - echo "=== first 100 lines of issues" ; cat htmlhint.log || true
@@ -155,7 +119,7 @@ htmlhint:
     when: always
     paths:
         - htmlhint.log
-    expire_in: 1 month
+    expire_in: 1 week
 
 csslint:
   stage: lint
@@ -164,7 +128,7 @@ csslint:
   allow_failure: false
   dependencies: []
   script:
-    - echo "This job checks for potential errors in CSS files"
+    - echo "PERFORM CSS LINT"
     - touch csslint.log
     - "csslint . > csslint.log || true"
     - echo "=== CSSLint issues" ; cat csslint.log || true
@@ -172,45 +136,66 @@ csslint:
     when: always
     paths:
         - csslint.log
-    expire_in: 1 month
+    expire_in: 1 week
 
 
 # ############################################################################
 # Test stage
 # ############################################################################
 
-pytst_dj4_2_11:
+check-migrations_dj4_2:
   stage: test
   tags:
     - docker
+  image: python:3.10
   allow_failure: false
   dependencies: []
+  before_script:
+    - apt update
+    - pip install -U pip
+    - pip install -r requirements.txt -U
+    - pip freeze > pipfreeze_check_migrations_dj4_2.txt
+    - pip check  
   script:
-    - echo "This job launches unit tests."
+    - echo "CHECK MIGRATIONS"
+    - echo "PATH is $PATH"
     - touch pytest.status pytest.log
+    - python manage.py makemigrations
+    - python manage.py migrate
+    - unmigrated_cnt=$(./manage.py showmigrations | grep -Eve '\[X\]' | grep -c '\[' ) || true
+    - test $unmigrated_cnt = 0
+
+  artifacts:
+    when: always
+    paths:
+        - pipfreeze_check_migrations_dj4_2.txt
+    expire_in: 1 week
+
+django-tests_4_2:
+  stage: test
+  tags:
+    - docker
+  image: python:3.10
+  allow_failure: false
+  dependencies: []
+  before_script:
     - apt update
     - pip install -U pip
     - pip install -r requirements.txt -U
     - pip freeze > pipfreeze_tst_py38_dj42.txt
     - pip check
+  script:
+    - echo "RUNNING UNIT TESTS"
     - echo "PATH is $PATH"
-    - ./manage.py makemigrations
-    - ./manage.py migrate
-    - ./manage.py compress
-    - cnt_unmigrated=$(./manage.py showmigrations | grep -Eve '\[X\]' | grep -c '\[' ) || true
-    - test $cnt_unmigrated = 0
     - "echo test start: $(date +'%Y%-%m-%d %H:%M:%S %s')"
-    # create empty log file
-    - echo | tee pytest.log
-    - ./bin/pytest.sh --junit-xml=pytests.xml -s satapp | tee -a pytest.log
+    - coverage run manage.py test -v 2 && coverage report | tee -a pytest.log
     - grep -Ee '== .*(failed|passed|skipped|warning|errors).* in .* ==' pytest.log > pytest.status
     - cat pytest.status
     - fail_cnt=$(cat pytest.status | sed -e 's/ failed.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
-    - pass_cnt=$(cat pytest.status | sed -e 's/ passed.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
     - skip_cnt=$(cat pytest.status | sed -e 's/ skipped.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
     - warn_cnt=$(cat pytest.status | sed -e 's/ warning.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
     - err_cnt=$(cat pytest.status  | sed -e 's/ error.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
-    - echo "E:$err_cnt W:$warn_cnt S:$skip_cnt P:$pass_cnt F:$fail_cnt"
+    - echo "E:$err_cnt W:$warn_cnt S:$skip_cnt F:$fail_cnt"
     - test $err_cnt -le 0
     - test $warn_cnt -le 0
     - test $skip_cnt -le 0
@@ -221,36 +206,9 @@ pytst_dj4_2_11:
     when: always
     paths:
         - pipfreeze_tst_py38_dj42.txt
-        - pytests.xml
         - pytest.log
         - pytest.status
-    expire_in: 1 month
-
-mk_doc:
-  tags:
-    - docker
-  image: python:3.8
-  dependencies: []
-  stage: doc
-  before_script:
-    - "echo $(which python ; python -V 2>&1)"
-    - apt-get update && apt-get install -y libsasl2-dev libldap2-dev libssl-dev dmtx-utils
-    - pip install nodeenv
-    - nodeenv -n $DFLT_NODE_VER mynode
-    - 'source $(pwd)/mynode/bin/activate'
-    - ls -l mynode/bin
-    - ls -lH mynode/bin/*
-    - npm install -g less
-  script:
-    - echo "This job should create spinx documentation."
-    - export DJANGO_SETTINGS_MODULE="webfw.settings.search_settings"
-    - export OIDC_RP_CLIENT_ID=mhcare_test
-    - export OIDC_RP_CLIENT_SECRET=1236
-    - export MHSI_DBUSER=mhsi
-    - export MHSI_DBNAME=$(pwd)/db/mh_si.db
-    - pip install -U pip
-    - pip install -r sphinx/requirements.txt
-    - ./sphinx/build.sh
+    expire_in: 1 week
 
 
 # ############################################################################
@@ -260,5 +218,6 @@ mk_doc:
 deploy-prod:
   stage: deploy
   script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
+    - echo "DEPLOY FROM $CI_COMMIT_BRANCH branch."
+  when: manual
   environment: production

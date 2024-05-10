@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
-from django.core.management.base import BaseCommand
-from django.apps import apps
 import json
 import os
+from random import choice, randint
+
+from django.apps import apps
+from django.core.management.base import BaseCommand
 from faker import Faker
-from random import randint, choice
+
 
 class Command(BaseCommand):
-    help = 'Generates test data for Owners, Satellites, Components, and Launchers'
+    help = 'Generates fixtures for Owners, Satellites, Payloads, and Launchers'
 
     def handle(self, *args, **options):
         app_config = apps.get_app_config('satapp')
@@ -31,7 +33,6 @@ class Command(BaseCommand):
                 }
             } for i in range(num)]
 
-
         def generate_satellites(num, owners_count):
             satellites = []
             for i in range(num):
@@ -46,15 +47,27 @@ class Command(BaseCommand):
             return satellites
 
         def generate_payloads(num, satellites_count):
-            payload_types = ['Camera', 'Sensor', 'Mirror', 'Antenna', 'Solar Panel', 'RGB Imager']
-            payload_providers = ['Eutelsat', 'Kineis', 'Totum', 'Airbus', 'Santal', 'Pixie']
+            payload_types = ['Camera',
+                             'Sensor',
+                             'Mirror',
+                             'Antenna',
+                             'Solar Panel',
+                             'RGB Imager']
+
+            payload_providers = ['Eutelsat',
+                                 'Kineis',
+                                 'Totum',
+                                 'Airbus',
+                                 'Santal',
+                                 'Pixie']
+
             payload_descr = ["For high resolution pictures",
                              "Methan presence sensors",
                              "Reflects lights to generate enegery",
                              "Inter satellite communication",
                              "For motor one",
                              "Detects water presence",]
-            
+
             payloads = []
             for i in range(num):
                 payloads.append({
@@ -70,7 +83,13 @@ class Command(BaseCommand):
             return payloads
 
         def generate_launchers(num, satellites_count):
-            launcher_types = ['Space Shuttle', 'SpaceX', 'Falcon 9', 'Ariane 5', 'Soyuz', 'Long March']
+            launcher_types = ['Space Shuttle',
+                              'SpaceX',
+                              'Falcon 9',
+                              'Ariane 5',
+                              'Soyuz',
+                              'Long March']
+
             launchers = []
             for i in range(num):
                 launchers.append({
@@ -104,11 +123,12 @@ class Command(BaseCommand):
         with open(os.path.join(fixtures_dir, 'launchers.json'), 'w') as f:
             json.dump(launchers, f, indent=4)
 
-        self.stdout.write(self.style.SUCCESS('Successfully generated fixtures'))
+        self.stdout.write(self.style.SUCCESS('Fixtures generated'))
 
 
 def main():
     pass
+
 
 if __name__ == "__main__":
     main()

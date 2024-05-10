@@ -86,7 +86,7 @@ mypy:
     - docker
   allow_failure: true
   script:
-    - echo "CHECK ANNOTATIONS."
+    - echo "CHECK TYPE HINTS."
     - "echo $(which python ; python -V 2>&1)"
     - pip install -U mypy
     - pip freeze > pipfreeze.mypy_3.10_check.txt

@@ -1,0 +1,111 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  isort:
+    runs-on: ubuntu-latest
+    container: python:3.10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Check import orders
+        run: |
+          echo "CHECK IMPORT ORDERS."
+          echo "$(which python ; python -V 2>&1)"
+          python -m pip install -U isort
+          python -m pip check
+          isort --version
+          isort . --check
+
+  flake3_10:
+    runs-on: ubuntu-latest
+    container: python:3.10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Check PEP8 compliance
+        run: |
+          echo "CHECK PEP8 COMPLIANCE AND OTHER POTENTIAL ERRORS (for Py3.10)"
+          echo "$(which python ; python -V 2>&1)"
+          python -m pip install -U flake8
+          python -m pip check
+          python -m flake8 . --exclude migrations | tee flake3.10.log
+
+  docstring_check:
+    runs-on: ubuntu-latest
+    container: python:3.10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Check docstring compliance
+        run: |
+          echo "CHECK FOR MISSING OR NON-COMPLIANT DOCSTRINGS IN PYTHON FILES."
+          "echo $(which python ; python -V 2>&1)"
+          python -m pip install -U flake8-docstrings
+          python -m pip check
+          python -m flake8 . --exclude migrations --docstring-convention pep257 | tee flake_3.10_docstring_check.log
+          errors=$(grep 'docstring' flake_3.10_docstring_check.txt | wc -l)
+          test "$errors" -le 0
+
+  mypy:
+    runs-on: ubuntu-latest
+    container: python:3.10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Check type hints
+        run: |
+          echo "CHECK TYPE HINTS."
+          "echo $(which python ; python -V 2>&1)"
+          python -m pip install -U mypy
+          python -m pip check
+          python -m mypy --ignore-missing-imports .
+
+  check-migrations_dj4_2:
+    runs-on: ubuntu-latest
+    container: python:3.10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Check migrations
+        run: |      
+          echo "CHECK MIGRATIONS"
+          python -m pip install -U pip
+          python -m pip install -r requirements.txt -U
+          python -m pip check  
+          echo "PATH is $PATH"
+          touch pytest.status pytest.log
+          python -m manage.py makemigrations
+          python -m manage.py migrate
+          unmigrated_cnt=$(./manage.py showmigrations | grep -Eve '\[X\]' | grep -c '\[' ) || true
+          test $unmigrated_cnt = 0
+  
+  pytest:
+    runs-on: ubuntu-latest
+    container: python:3.10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Check migrations
+        run: |   
+          python -m pip install -U pip
+          python -m pip install -r requirements.txt -U
+          python -m pip check
+          echo "RUNNING UNIT TESTS"
+          echo "PATH is $PATH"
+          "echo test start: $(date +'%Y%-%m-%d %H:%M:%S %s')"
+          pytest --junitxml=report.xml | tee -a pytest.log
+          grep -Ee '== .*(failed|passed|skipped|warning|errors).* in .* ==' pytest.log > pytest.status
+          cat pytest.status
+          fail_cnt=$(cat pytest.status | sed -e 's/ failed.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
+          skip_cnt=$(cat pytest.status | sed -e 's/ skipped.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
+          warn_cnt=$(cat pytest.status | sed -e 's/ warning.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
+          err_cnt=$(cat pytest.status  | sed -e 's/ error.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
+          echo "E:$err_cnt W:$warn_cnt S:$skip_cnt F:$fail_cnt"
+          test $err_cnt -le 0
+          test $warn_cnt -le 0
+          test $skip_cnt -le 0
+          test $fail_cnt -le 0
+          "echo test end: $(date +'%Y%-%m-%d %H:%M:%S %s')"
+    

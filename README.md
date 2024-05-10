@@ -85,17 +85,17 @@ The objective of the project is to exploit:
     docker-compose up
     ```
 
-### Populate initial data with fixtures for tests
+## Populate initial data with fixtures for tests
 
-1. **Build the Docker image:**
+1. **For Local environment:**
 
     ```sh
     poetry run python manage.py loaddata
     ```
-2. **Launch Docker Compose:** 
+2. **For Docker environment:** 
 
     ```sh
-    docker-compose up
+    docker exec <container_id_or_name> bash -c "python /code/manage.py loaddata"
     ```
 
 

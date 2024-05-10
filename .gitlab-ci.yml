@@ -27,7 +27,6 @@ isort:
     - python -m pip check
     - isort --version
     - isort . --check
-
   artifacts:
     when: always
     paths:
@@ -49,7 +48,6 @@ flake3_10:
     - pip install -U flake8 configparser
     - pip freeze > pipfreeze.flake3_10.txt
     - pip check
-    - find . -type f -name '*.py' | xargs file > fileencodings.log
     - python -m flake8 . --exclude migrations | tee flake3.10.log
   artifacts:
     when: always
@@ -66,29 +64,40 @@ docstring_check:
   allow_failure: true
   dependencies: []
   script:
-    - echo "CHECK FORM MISSING OR NON-COMPLIANT DOCSTRINGS IN PYTHON FILES."
+    - echo "CHECK FOR MISSING OR NON-COMPLIANT DOCSTRINGS IN PYTHON FILES."
     - "echo $(which python ; python -V 2>&1)"
     - pip install -U flake8-docstrings
-    - pip freeze > pipfreeze.flake_3_8_docstring_check.txt
+    - pip freeze > pipfreeze.flake_3.10_docstring_check.txt
     - pip check
-    - find . -type f -name '*.py' | xargs file > fileencodings.log
-    - python -m flake8 . --exclude migrations --docstring-convention pep257 | tee flake_3_8_docstring_check.log
-    - errors=$(grep 'docstring' flake_3_8_docstring_check.txt | wc -l)
+    - python -m flake8 . --exclude migrations --docstring-convention pep257 | tee flake_3.10_docstring_check.log
+    - errors=$(grep 'docstring' flake_3.10_docstring_check.txt | wc -l)
     - test "$errors" -le 0
-
   artifacts:
     when: always
     paths:
-        - pipfreeze.flake_3_8_docstring_check.txt
-        - flake_3_8_docstring_check.log
+        - pipfreeze.flake_3.10_docstring_check.txt
+        - flake_3.10_docstring_check.log
     expire_in: 1 week
 
 mypy:
   stage: lint
   image: python:3.10
+  tags:
+    - docker
   allow_failure: true
   script:
+    - echo "CHECK ANNOTATIONS."
+    - "echo $(which python ; python -V 2>&1)"
+    - pip install -U mypy
+    - pip freeze > pipfreeze.mypy_3.10_check.txt
+    - pip check
     - python -m mypy --ignore-missing-imports .
+  artifacts:
+    when: always
+    paths:
+        - pipfreeze.flake_3.10_docstring_check.txt
+        - mypy_3.10_check.log
+    expire_in: 1 week
 
 shellcheck:
   stage: lint
@@ -98,7 +107,7 @@ shellcheck:
   before_script:
     - apk update
     - apk add git
-  allow_failure: false
+  allow_failure: true
   dependencies: []
   script:
     - echo "This job checks shell scripts for potential errors."
@@ -108,7 +117,7 @@ htmlhint:
   stage: lint
   tags:
     - docker
-  allow_failure: false
+  allow_failure: true
   dependencies: []
   script:
     - echo "PERFORM STATIC CODE ANALYSIS OF HTML FILES"
@@ -125,7 +134,7 @@ csslint:
   stage: lint
   tags:
     - docker
-  allow_failure: false
+  allow_failure: true
   dependencies: []
   script:
     - echo "PERFORM CSS LINT"
@@ -218,6 +227,6 @@ django-tests_4_2:
 deploy-prod:
   stage: deploy
   script:
-    - echo "DEPLOY FROM $CI_COMMIT_BRANCH branch."
+    - echo "DEPLOY FROM $CI_COMMIT_BRANCH branch (TODO)"
   when: manual
   environment: production

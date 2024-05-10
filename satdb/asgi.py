@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 ASGI config for satdb project.
 

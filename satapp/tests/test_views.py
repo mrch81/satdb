@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """Test admin module"""
 import pytest
 

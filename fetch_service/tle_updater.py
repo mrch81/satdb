@@ -10,6 +10,7 @@ import django
 from asgiref.sync import async_to_sync, sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.layers import get_channel_layer
+from typing import Any, Dict
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "satdb.settings")
 django.setup()
@@ -22,26 +23,45 @@ logger = logging.getLogger(__name__)
 
 
 class TLEUpdater:
-    def __init__(self):
-        self.url = SATELLITE_FEED_URL
+    """A service to fetch feeds from an Open API and update them."""
 
-    async def fetch_tle_data(self):
+    def __init__(self) -> None:
+        self.url: str = SATELLITE_FEED_URL
+
+    async def fetch_tle_data(self) -> Dict[str, Any]:
+        """ 
+        Requests Satellite feed from SATELLITE_FEED_URL
+        Returns the response json
+        """
+        
         async with aiohttp.ClientSession() as session:
             async with session.get(self.url) as response:
                 return await response.json()
 
-    async def update_satellites(self):
+    async def update_satellites(self) -> None:
+        """ 
+        Calls fetch data whose result is a json containing a list 
+        of satellites. This is fed to update_satellite method to update.
+        This is done at the frequency of FETCH_TLE_FREQUENCY seconds.
+        """
+
         while True:
-            tle_data = await self.fetch_tle_data()
+            tle_data: Dict[str, Any] = await self.fetch_tle_data()
+            
             # Process the fetched data and update the satellites
-            satellites = tle_data.get('member', [])
+            satellites: list = tle_data.get('member', [])
             for data in satellites:
                 logger.info("Fetched satellite: %s", data['name'])
                 await sync_to_async(self.update_satellite)(data)
             await asyncio.sleep(FETCH_TLE_FREQUENCY)  # Fetch data every 1 hour
 
-    def update_satellite(self, data):
-
+    def update_satellite(self, data: Dict[str, Any]) -> None:
+        """ 
+        Updates satellite properties and publishes the satellite_update event
+        to its subscribers
+        """
+        
+        # Get the satellite object from our database or create it
         satellite, _ = Satellite.objects.get_or_create(
                                                 name=data['name'],
                                                 sat_id=data['satelliteId'])  # noqa: E501
@@ -69,7 +89,11 @@ class TLEUpdater:
             }
         )
 
-    async def run(self):
+    async def run(self) -> None:
+        """ 
+        Run the task that fetches the latest satellite data 
+        and updating the local database or state
+        """
         await self.update_satellites()
 
 

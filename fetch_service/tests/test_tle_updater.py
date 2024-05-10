@@ -12,13 +12,15 @@ from satdb.settings import FETCH_TLE_FREQUENCY, SATELLITE_FEED_URL
 logger = logging.getLogger(__name__)
 
 
+# Fixture for creating a TLEUpdater instance
 @pytest.fixture
-def tle_updater():
+def tle_updater() -> TLEUpdater:
     return TLEUpdater()
 
+# Test for the asynchronous fetch_tle_data method
 @pytest.mark.asyncio
 @patch('your_module.aiohttp.ClientSession')
-async def test_fetch_tle_data(mock_session, tle_updater):
+async def test_fetch_tle_data(mock_session: MagicMock, tle_updater: TLEUpdater) -> None:
     # Setup mock response
     mock_response = MagicMock()
     mock_response.json.return_value = asyncio.Future()
@@ -28,7 +30,7 @@ async def test_fetch_tle_data(mock_session, tle_updater):
     mock_session.return_value.__aenter__.return_value.get.return_value = mock_response
 
     # Execute
-    result = await tle_updater.fetch_tle_data()
+    result: Dict[str, Any] = await tle_updater.fetch_tle_data()
     
     # Verify
     assert result == {
@@ -36,12 +38,17 @@ async def test_fetch_tle_data(mock_session, tle_updater):
     }
     mock_session.return_value.__aenter__.return_value.get.assert_called_once_with(TEST_SATELLITE_FEED_URL)
 
-
+# Test for the asynchronous update_satellites method
 @pytest.mark.asyncio
 @patch('your_module.asyncio.sleep', new_callable=AsyncMock)
 @patch('your_module.TLEUpdater.fetch_tle_data')
 @patch('your_module.TLEUpdater.update_satellite')
-async def test_update_satellites(mock_update_satellite, mock_fetch_tle_data, mock_sleep, tle_updater):
+async def test_update_satellites(
+    mock_update_satellite: MagicMock,
+    mock_fetch_tle_data: MagicMock,
+    mock_sleep: AsyncMock,
+    tle_updater: TLEUpdater
+) -> None:
     # Setup mocks
     mock_fetch_tle_data.return_value = asyncio.Future()
     mock_fetch_tle_data.return_value.set_result({
@@ -62,4 +69,3 @@ async def test_update_satellites(mock_update_satellite, mock_fetch_tle_data, moc
     mock_update_satellite.assert_called_once()
     mock_fetch_tle_data.assert_called_once()
     mock_sleep.assert_called_once_with(FETCH_TLE_FREQUENCY)
-

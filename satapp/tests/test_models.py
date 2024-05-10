@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """Test django models"""
 
 from datetime import datetime

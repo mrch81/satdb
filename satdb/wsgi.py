@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 WSGI config for satdb project.
 

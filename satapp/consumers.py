@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """ WebSocket consumer module"""
 
 import json
@@ -9,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class SatAppWsConsumer(AsyncWebsocketConsumer):
-    """Channels WebSocket consumer."""
+    """Channels WebSocket consumer for satapp."""
 
     async def connect(self):
         await self.accept()

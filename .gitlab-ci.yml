@@ -16,7 +16,7 @@ isort:
   stage: lint
   image: python:3.10
   tags:
-    - docker
+    - gitlab-org-docker
   allow_failure: false
   dependencies: []
   script:
@@ -39,7 +39,7 @@ flake3_10:
   stage: lint
   image: python:3.10
   tags:
-    - docker
+    - gitlab-org-docker
   allow_failure: false
   dependencies: []
   script:
@@ -60,7 +60,7 @@ docstring_check:
   stage: lint
   image: python:3.10
   tags:
-    - docker
+    - gitlab-org-docker
   allow_failure: true
   dependencies: []
   script:
@@ -83,7 +83,7 @@ mypy:
   stage: lint
   image: python:3.10
   tags:
-    - docker
+    - gitlab-org-docker
   allow_failure: true
   script:
     - echo "CHECK TYPE HINTS."
@@ -103,7 +103,7 @@ shellcheck:
   stage: lint
   image: koalaman/shellcheck-alpine:latest
   tags:
-    - docker
+    - gitlab-org-docker
   before_script:
     - apk update
     - apk add git
@@ -116,7 +116,7 @@ shellcheck:
 htmlhint:
   stage: lint
   tags:
-    - docker
+    - gitlab-org-docker
   allow_failure: true
   dependencies: []
   script:
@@ -133,7 +133,7 @@ htmlhint:
 csslint:
   stage: lint
   tags:
-    - docker
+    - gitlab-org-docker
   allow_failure: true
   dependencies: []
   script:
@@ -155,7 +155,7 @@ csslint:
 check-migrations_dj4_2:
   stage: test
   tags:
-    - docker
+    - gitlab-org-docker
   image: python:3.10
   allow_failure: false
   dependencies: []
@@ -183,7 +183,7 @@ check-migrations_dj4_2:
 pytest:
   stage: test
   tags:
-    - docker
+    - gitlab-org-docker
   image: python:3.10
   allow_failure: false
   dependencies: []

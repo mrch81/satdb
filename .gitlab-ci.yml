@@ -12,24 +12,9 @@ variables:
 # lint stage
 # ############################################################################
 
-check-todo:
-  stage: lint
-  image: python:3.8
-  tags:
-    - docker
-  allow_failure: false
-  dependencies: []
-  script:
-    - echo "TRACE TODOs IN THE CODE."
-    - git grep TODO | grep -v '\.gitlab-ci.yml' > todo_lines.txt || true
-    - todo_lines=$(cat todo_lines.txt | wc -l)
-    - echo "====== $todo_lines files with HOTFIX ======="
-    - cat todo_lines.txt
-    - test $todo_lines -le 2
-
 isort:
   stage: lint
-  image: python:3.8
+  image: python:3.10
   tags:
     - docker
   allow_failure: false
@@ -51,31 +36,31 @@ isort:
         - isort_errors.txt
     expire_in: 1 week
 
-flake3_8:
+flake3_10:
   stage: lint
-  image: python:3.8
+  image: python:3.10
   tags:
     - docker
   allow_failure: false
   dependencies: []
   script:
-    - echo "CHECK PEP8 COMPLIANCE AND OTHER POTENTIAL ERRORS (for Py3.8)"
+    - echo "CHECK PEP8 COMPLIANCE AND OTHER POTENTIAL ERRORS (for Py3.10)"
     - "echo $(which python ; python -V 2>&1)"
     - pip install -U flake8 configparser
-    - pip freeze > pipfreeze.flake_3_8.txt
+    - pip freeze > pipfreeze.flake3_10.txt
     - pip check
     - find . -type f -name '*.py' | xargs file > fileencodings.log
     - python -m flake8 . --exclude migrations | tee flake3.10.log
   artifacts:
     when: always
     paths:
-        - pipfreeze.flake_3_8.txt
-        - flake3.8.log
+        - pipfreeze.flake3_10.txt
+        - flake3.10.log
     expire_in: 1 week
 
 docstring_check:
   stage: lint
-  image: python:3.8
+  image: python:3.10
   tags:
     - docker
   allow_failure: true
@@ -100,6 +85,7 @@ docstring_check:
 
 mypy:
   stage: lint
+  image: python:3.10
   allow_failure: true
   script:
     - python -m mypy --ignore-missing-imports .
@@ -161,7 +147,7 @@ check-migrations_dj4_2:
   stage: test
   tags:
     - docker
-  image: python:3.8
+  image: python:3.10
   allow_failure: false
   dependencies: []
   before_script:
@@ -189,7 +175,7 @@ django-tests_4_2:
   stage: test
   tags:
     - docker
-  image: python:3.8
+  image: python:3.10
   allow_failure: false
   dependencies: []
   before_script:

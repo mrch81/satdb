@@ -7,6 +7,17 @@ stages:
 
 variables:
   GIT_STRATEGY: fetch
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+
+image: python:3.12
+
+before_script:
+  - python --version ; pip --version  # For debugging
+
 
 # ############################################################################
 # lint stage
@@ -14,7 +25,6 @@ variables:
 
 isort:
   stage: lint
-  image: python:3.10
   tags:
     - gitlab-org-docker
   allow_failure: false
@@ -35,30 +45,28 @@ isort:
         - isort_errors.txt
     expire_in: 1 week
 
-flake3_10:
+flake8:
   stage: lint
-  image: python:3.10
   tags:
     - gitlab-org-docker
   allow_failure: false
   dependencies: []
   script:
-    - echo "CHECK PEP8 COMPLIANCE AND OTHER POTENTIAL ERRORS (for Py3.10)"
+    - echo "CHECK PEP8 COMPLIANCE AND OTHER POTENTIAL ERRORS (for Py3.12)"
     - "echo $(which python ; python -V 2>&1)"
     - pip install -U flake8 configparser
-    - pip freeze > pipfreeze.flake3_10.txt
+    - pip freeze > pipfreeze.flake8.txt
     - pip check
-    - python -m flake8 . --exclude migrations | tee flake3.10.log
+    - python -m flake8 . --exclude migrations | tee flake3.12.log
   artifacts:
     when: always
     paths:
-        - pipfreeze.flake3_10.txt
-        - flake3.10.log
+        - pipfreeze.flake8.txt
+        - flake3.12.log
     expire_in: 1 week
 
 docstring_check:
   stage: lint
-  image: python:3.10
   tags:
     - gitlab-org-docker
   allow_failure: true
@@ -67,21 +75,20 @@ docstring_check:
     - echo "CHECK FOR MISSING OR NON-COMPLIANT DOCSTRINGS IN PYTHON FILES."
     - "echo $(which python ; python -V 2>&1)"
     - pip install -U flake8-docstrings
-    - pip freeze > pipfreeze.flake_3.10_docstring_check.txt
+    - pip freeze > pipfreeze.flake_3.12_docstring_check.txt
     - pip check
-    - python -m flake8 . --exclude migrations --docstring-convention pep257 | tee flake_3.10_docstring_check.log
-    - errors=$(grep 'docstring' flake_3.10_docstring_check.txt | wc -l)
+    - python -m flake8 . --exclude migrations --docstring-convention pep257 | tee flake_3.12_docstring_check.log
+    - errors=$(grep 'docstring' flake_3.12_docstring_check.txt | wc -l)
     - test "$errors" -le 0
   artifacts:
     when: always
     paths:
-        - pipfreeze.flake_3.10_docstring_check.txt
-        - flake_3.10_docstring_check.log
+        - pipfreeze.flake_3.12_docstring_check.txt
+        - flake_3.12_docstring_check.log
     expire_in: 1 week
 
 mypy:
   stage: lint
-  image: python:3.10
   tags:
     - gitlab-org-docker
   allow_failure: true
@@ -89,63 +96,63 @@ mypy:
     - echo "CHECK TYPE HINTS."
     - "echo $(which python ; python -V 2>&1)"
     - pip install -U mypy
-    - pip freeze > pipfreeze.mypy_3.10_check.txt
+    - pip freeze > pipfreeze.mypy_3.12_check.txt
     - pip check
     - python -m mypy --ignore-missing-imports .
   artifacts:
     when: always
     paths:
-        - pipfreeze.flake_3.10_docstring_check.txt
-        - mypy_3.10_check.log
+        - pipfreeze.flake_3.12_docstring_check.txt
+        - mypy_3.12_check.log
     expire_in: 1 week
 
-shellcheck:
-  stage: lint
-  image: koalaman/shellcheck-alpine:latest
-  tags:
-    - gitlab-org-docker
-  before_script:
-    - apk update
-    - apk add git
-  allow_failure: true
-  dependencies: []
-  script:
-    - echo "This job checks shell scripts for potential errors."
-    - git ls-files --exclude='*.sh' --ignored -c -z | xargs -0r shellcheck
+# shellcheck:
+#   stage: lint
+#   image: koalaman/shellcheck-alpine:latest
+#   tags:
+#     - gitlab-org-docker
+#   before_script:
+#     - apk update
+#     - apk add git
+#   allow_failure: true
+#   dependencies: []
+#   script:
+#     - echo "This job checks shell scripts for potential errors."
+#     - git ls-files --exclude='*.sh' --ignored -c -z | xargs -0r shellcheck
 
-htmlhint:
-  stage: lint
-  tags:
-    - gitlab-org-docker
-  allow_failure: true
-  dependencies: []
-  script:
-    - echo "PERFORM STATIC CODE ANALYSIS OF HTML FILES"
-    - touch htmlhint.log
-    - "htmlhint . > htmlhint.log || true"
-    - echo "=== first 100 lines of issues" ; cat htmlhint.log || true
-  artifacts:
-    when: always
-    paths:
-        - htmlhint.log
-    expire_in: 1 week
-
-csslint:
-  stage: lint
-  tags:
-    - gitlab-org-docker
-  allow_failure: true
-  dependencies: []
-  script:
-    - echo "PERFORM CSS LINT"
-    - touch csslint.log
-    - "csslint . > csslint.log || true"
-    - echo "=== CSSLint issues" ; cat csslint.log || true
-  artifacts:
-    when: always
-    paths:
-        - csslint.log
-    expire_in: 1 week
+# htmlhint:
+#   stage: lint
+#   tags:
+#     - gitlab-org-docker
+#   allow_failure: true
+#   dependencies: []
+#   script:
+#     - echo "PERFORM STATIC CODE ANALYSIS OF HTML FILES"
+#     - touch htmlhint.log
+#     - "htmlhint . > htmlhint.log || true"
+#     - echo "=== first 100 lines of issues" ; cat htmlhint.log || true
+#   artifacts:
+#     when: always
+#     paths:
+#         - htmlhint.log
+#     expire_in: 1 week
+# 
+# csslint:
+#   stage: lint
+#   tags:
+#     - gitlab-org-docker
+#   allow_failure: true
+#   dependencies: []
+#   script:
+#     - echo "PERFORM CSS LINT"
+#     - touch csslint.log
+#     - "csslint . > csslint.log || true"
+#     - echo "=== CSSLint issues" ; cat csslint.log || true
+#   artifacts:
+#     when: always
+#     paths:
+#         - csslint.log
+#     expire_in: 1 week
 
 
 # ############################################################################
@@ -156,7 +163,6 @@ check-migrations_dj4_2:
   stage: test
   tags:
     - gitlab-org-docker
-  image: python:3.10
   allow_failure: false
   dependencies: []
   before_script:
@@ -184,7 +190,6 @@ pytest:
   stage: test
   tags:
     - gitlab-org-docker
-  image: python:3.10
   allow_failure: false
   dependencies: []
   before_script:

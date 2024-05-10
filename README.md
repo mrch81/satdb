@@ -12,8 +12,8 @@ The objective of the project is to exploit:
 | Type | Description |
 | ------ | ------ |
 | Backend | Django backend with GraphQL API framework using graphene and graphene-django |
-| Fetch Service | a service that periodically fetches TLE information from an Open API. Celery can be used but the objective is to exploit asyncio. |
-| Frontend | Working on it. I haven't yet decided whether to use Angular or React |
+| Fetch Service | a service that periodically fetches TLE information from an Open API. Celery could also be used. |
+| Frontend | TODO: working on it. I haven't yet decided whether to use Angular or React |
 | CI Gitlab | CI pipelines for QA and testing on [Gitlab](https://gitlab.com/webfw1/satdb) |
 | CI Github | Actions for QA and testing on Github |
 | Containerisation | a dockerfile and a docker-compose.yml |

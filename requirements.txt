@@ -38,7 +38,9 @@ pyasn1-modules==0.3.0
 pyasn1==0.5.1
 pycparser==2.21
 pyopenssl==24.0.0
+pytest-asyncio>=0.23.6
 pytest-django==4.8.0
+pytest-mock>=3.14.0
 pytest==8.0.0
 redis==5.0.1
 service-identity==24.1.0

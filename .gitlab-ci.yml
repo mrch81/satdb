@@ -180,7 +180,7 @@ check-migrations_dj4_2:
         - pipfreeze_check_migrations_dj4_2.txt
     expire_in: 1 week
 
-django-tests_4_2:
+pytest:
   stage: test
   tags:
     - docker
@@ -191,13 +191,13 @@ django-tests_4_2:
     - apt update
     - pip install -U pip
     - pip install -r requirements.txt -U
-    - pip freeze > pipfreeze_tst_py38_dj42.txt
+    - pip freeze > pipfreeze_tst_py310_dj42.txt
     - pip check
   script:
     - echo "RUNNING UNIT TESTS"
     - echo "PATH is $PATH"
     - "echo test start: $(date +'%Y%-%m-%d %H:%M:%S %s')"
-    - coverage run manage.py test -v 2 && coverage report | tee -a pytest.log
+    - pytest --junitxml=report.xml | tee -a pytest.log
     - grep -Ee '== .*(failed|passed|skipped|warning|errors).* in .* ==' pytest.log > pytest.status
     - cat pytest.status
     - fail_cnt=$(cat pytest.status | sed -e 's/ failed.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
@@ -214,7 +214,7 @@ django-tests_4_2:
   artifacts:
     when: always
     paths:
-        - pipfreeze_tst_py38_dj42.txt
+        - pipfreeze_tst_py310_dj42.txt
         - pytest.log
         - pytest.status
     expire_in: 1 week

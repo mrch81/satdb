@@ -4,15 +4,13 @@
 
 from django.contrib import admin
 
-from .models import Payload
-from .models import Launcher
-from .models import Owner
-from .models import Satellite
+from .models import Launcher, Owner, Payload, Satellite
 
-# Register your models here.
+# Admin models here.
+
 
 class SatelliteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'owner' )
+    list_display = ('id', 'name', 'sat_id', 'tle_date', 'line1', 'line2')
 
 
 class OwnerAdmin(admin.ModelAdmin):

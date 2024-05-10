@@ -7,17 +7,20 @@ The objective of the project is to exploit:
 - GraphQL querying capabilities 
 - WebSocket subscriptions for updates
 
-The project includes:
-- [x] **Backend**: a Django backend service with GraphQL API framework using graphene and graphene-django
-- [x] **Fetch Service**: a service that periodically fetches TLE information from an Open API. Celery can be used but the objective is to exploit asyncio.
-- [] **Frontend**: Working on it. I haven't yet decided whether to use Angular or React
-- [x] **CI Gitlab**: CI pipelines for QA and testing on [Gitlab](https://gitlab.com/webfw1/satdb)
-- [x] **CI Github**: Actions for QA and testing on Github
-- [x] **Containerisation**: a dockerfile and a docker-compose.yml for containerisation.
-- [x] **Fixtures**: fixtures to generate initial data for tests
-- [x] **Testing**: Unit tests, of course!
-- [x] **Package Management**: Package and dependencies installation using Poetry as well as pip.
-- [x] **Database**: A default sqlite database. Postgresql is recommended.
+## Features
+
+| Type | Description |
+| ------ | ------ |
+| Backend | Django backend with GraphQL API framework using graphene and graphene-django |
+| Fetch Service | a service that periodically fetches TLE information from an Open API. Celery can be used but the objective is to exploit asyncio. |
+| Frontend | Working on it. I haven't yet decided whether to use Angular or React |
+| CI Gitlab | CI pipelines for QA and testing on [Gitlab](https://gitlab.com/webfw1/satdb) |
+| CI Github | Actions for QA and testing on Github |
+| Containerisation | a dockerfile and a docker-compose.yml |
+| Fixtures | fixtures to generate initial data for tests |
+| Unit Testing | Of course! |
+| Package Management | Package and dependencies installation using Poetry as well as pip. |
+| Database | A default sqlite database. Postgresql is recommended. |
 
 ---
 
@@ -26,7 +29,6 @@ The project includes:
 ![image description](docs/schema.v1.0.png)
 
 ---
-
 
 #  Installation
 
@@ -42,26 +44,26 @@ The project includes:
 
 1. **Install dependencies:**
     
-    ```console
+    ```sh
+    cd satdb
     poetry install
     ```
 
 3. **Run migrations:**
 
-    ```console
+    ```sh
     poetry run python manage.py migrate
     ```
 
 4. **Run the backend:**
 
-    ```console
+    ```sh
     poetry run python manage.py runserver 0.0.0.0:8000
     ```
 
 5. **Run the fetch service:**
 
-
-    ```console
+    ```sh
     poetry run python fetch_service\tle_updater.py 
     ```
 
@@ -72,26 +74,136 @@ The project includes:
 
 ### Installation - Docker
 
-
-### Installation Steps
-
 1. **Build the Docker image:**
 
-    ```console
+    ```sh
     docker build -t satdb .
     ```
-3. **Launch Docker Compose:** 
+2. **Launch Docker Compose:** 
 
-    ```console
+    ```sh
     docker-compose up
     ```
 
+### Populate initial data with fixtures for tests
+
+1. **Build the Docker image:**
+
+    ```sh
+    poetry run python manage.py loaddata
+    ```
+2. **Launch Docker Compose:** 
+
+    ```sh
+    docker-compose up
+    ```
+
+
 ##  Query examples
 
-1. **Query: get available satellite list:**
+1. **Query: get all satellites:**
 
-TODO
+    ```graphql
+        query {
+            allSatellites {
+                name
+                owner {
+                    name
+                }
+            }
+        }
+    ```
 
-2. **Mutation: update satellite:** 
+2. **Mutation: create a satellite:** 
 
-TODO
+    ```graphql
+        mutation {
+            createSatellite(name: "James Webb", ownerId: <owner_pk>) {
+                satellite {
+                    name
+                    owner {
+                        name
+                    }
+                }
+            }
+        }
+    ```
+
+2. **Mutation: update a satellite:** 
+
+    ```graphql
+        mutation {
+            updateSatellite(id: <satellite_pk>, name: "Updated Hubble") {
+                satellite {
+                    name
+                }
+            }
+        }
+    ```
+
+2. **Mutation: get payloads:** 
+
+    ```graphql
+        query {
+            allPayloads {
+                provider
+                type
+                description
+                satellite {
+                    name
+                }
+            }
+        }
+    ```
+    
+2. **Mutation: create payload for a satellite:** 
+
+    ```graphql
+        mutation {
+            createPayload(provider: "SpaceX",
+                          satelliteId: <satellite_pk>,
+                          type: "Camera",
+                          description: "High-resolution camera") {
+              payload {
+                id
+                provider
+                type
+                description
+                satellite {
+                  id
+                  name
+                }
+              }
+            }
+          }
+    ```
+
+2. **Mutation: update payload for a satellite:** 
+
+    ```graphql
+        mutation {
+            updatePayload(id: <payload_pk>,
+                          provider:
+                          "SpaceX",
+                          satelliteId: <satellite_pk>,
+                          type: "Camera",
+                          description: "High-resolution camera") {
+              payload {
+                id
+                provider
+                type
+                description
+                satellite {
+                  id
+                  name
+                }
+              }
+            }
+          }
+    ```
+
+## License
+
+MIT
+
+**Definitely Free Software, this one!**

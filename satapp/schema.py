@@ -194,7 +194,9 @@ class CreateSatellite(graphene.Mutation):
         Returns:
             Mutation: created satellite
         """
-        owner = Owner.objects.get(pk=owner_id)
+        owner = None
+        if owner_id is not None:
+            owner = Owner.objects.get(pk=owner_id)
         satellite = Satellite(name=name,
                               owner=owner,
                               line1=line1,

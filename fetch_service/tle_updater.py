@@ -66,8 +66,8 @@ class TLEUpdater:
                                                 sat_id=data['satelliteId'])  # noqa: E501
         # Update satellite properties with data from tle_data
         satellite.tle_date = data['date']
-        satellite.line1 = data['line2']
-        satellite.line1 = data['line2']
+        satellite.line1 = data['line1']
+        satellite.line2 = data['line2']
         logger.debug("Satellite %r updated", satellite.sat_id)
         satellite.save()
 

@@ -96,7 +96,7 @@ mypy:
     - pip install -U mypy
     - pip freeze > pipfreeze.mypy_3.12_check.txt
     - pip check
-    - python -m mypy --ignore-missing-imports .
+    - python -m mypy --ignore-missing-imports --disable-error-code=import-untyped .
   artifacts:
     when: on_failure
     paths:

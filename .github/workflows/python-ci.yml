@@ -60,7 +60,7 @@ jobs:
           "echo $(which python ; python -V 2>&1)"
           python -m pip install -U mypy
           python -m pip check
-          python -m mypy --ignore-missing-imports .
+          python -m mypy --ignore-missing-imports --disable-error-code=import-untyped .
 
   check-migrations_dj4_2:
     runs-on: ubuntu-latest

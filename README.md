@@ -4,14 +4,15 @@ Satdb is a lightweight and type-safe [Django]((https://www.djangoproject.com/)) 
 
 The objective of the project is to exploit:
 
-- GraphQL querying capabilities
-- WebSocket subscriptions for updates
+- GraphQL capabilities
+- WebSocket subscriptions
+- Multi-container architecture with docker compose
 
-> Given more resources, this may evolve into a comprensive
-> Satellelite Database Management System.
-> For now, only the Satellite table is populated using
-> NASA's TLE API which is set in django settings.
-> The Payload, Launcher and Owner tables are empty.
+> This minimalist project be scaled into a comprehensive
+> Satellelite Database Management System, in time.
+> For now, the Satellite table is populated using
+> NASA's TLE API configured in django settings. 
+> The other tables (Payload, Launcher and Owner) are empty.
 > However for test purpose they can be populated using
 > the fixtures provided with the code.
 

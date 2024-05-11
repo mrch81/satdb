@@ -175,11 +175,11 @@ class CreateSatellite(graphene.Mutation):
     def mutate(self,
                info: graphene.ResolveInfo,
                name: str,
-               sat_id: int = None,
-               line1: str = None,
-               line2: str = None,
-               tle_date: datetime.date = None,
-               owner_id: int = None) -> graphene.Mutation:
+               sat_id: Optional[int] = None,
+               line1: Optional[str] = None,
+               line2: Optional[str] = None,
+               tle_date: Optional[datetime.date] = None,
+               owner_id: Optional[int] = None) -> graphene.Mutation:
         """Mutation method to create Satellite.
 
         Args:

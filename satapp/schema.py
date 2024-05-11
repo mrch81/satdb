@@ -4,7 +4,7 @@
 
 import datetime
 import logging
-from typing import Optional, Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 # Imports
 import graphene
@@ -166,7 +166,7 @@ class CreateSatellite(graphene.Mutation):
         name = graphene.String(required=True)
         owner_id = graphene.Int(required=True)
 
-    satellite: graphene.Field(SatelliteType)
+    satellite: graphene.Field = graphene.Field(SatelliteType)
 
     def mutate(self,
                info: graphene.ResolveInfo,
@@ -208,7 +208,7 @@ class UpdateSatellite(graphene.Mutation):
         id = graphene.ID(required=True)
         name = graphene.String(required=True)
 
-    satellite: graphene.Field(SatelliteType)
+    satellite: graphene.Field = graphene.Field(SatelliteType)
 
     def mutate(self,
                info: graphene.ResolveInfo,
@@ -237,7 +237,7 @@ class CreateOwner(graphene.Mutation):
         name = graphene.String(required=True)
         country = graphene.String(required=True)
 
-    owner: graphene.Field(OwnerType)
+    owner: graphene.Field = graphene.Field(OwnerType)
 
     def mutate(self,
                info: graphene.ResolveInfo,
@@ -266,7 +266,7 @@ class UpdateOwner(graphene.Mutation):
         name = graphene.String()
         country = graphene.String()
 
-    owner: graphene.Field(OwnerType)
+    owner: graphene.Field = graphene.Field(OwnerType)
 
     def mutate(self,
                info: graphene.ResolveInfo,
@@ -301,7 +301,7 @@ class CreateLauncher(graphene.Mutation):
         launcher_type = graphene.String(required=True)
         launch_date = graphene.Date(required=True)
 
-    launcher: graphene.Field(LauncherType)
+    launcher: graphene.Field = graphene.Field(LauncherType)
 
     def mutate(self,
                info: graphene.ResolveInfo,
@@ -336,7 +336,7 @@ class UpdateLauncher(graphene.Mutation):
         launch_date = graphene.Date()
         satellite_ids = graphene.List(graphene.ID)
 
-    launcher: graphene.Field(LauncherType)
+    launcher: graphene.Field = graphene.Field(LauncherType)
 
     def mutate(self,
                info: graphene.ResolveInfo,
@@ -377,7 +377,7 @@ class CreatePayload(graphene.Mutation):
         type = graphene.String(required=True)
         description = graphene.String()
 
-    payload: graphene.Field(PayloadType)
+    payload: graphene.Field = graphene.Field(PayloadType)
 
     def mutate(self,
                info: graphene.ResolveInfo,
@@ -416,7 +416,7 @@ class UpdatePayload(graphene.Mutation):
         type = graphene.String()
         description = graphene.String()
 
-    payload: graphene.Field(PayloadType)
+    payload: graphene.Field = graphene.Field(PayloadType)
 
     def mutate(self,
                info: graphene.ResolveInfo,

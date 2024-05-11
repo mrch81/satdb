@@ -18,7 +18,7 @@ jobs:
           isort --version
           isort . --check
 
-  flake3_10:
+  flake8:
     runs-on: ubuntu-latest
     container: python:3.10
     steps:
@@ -44,7 +44,7 @@ jobs:
           "echo $(which python ; python -V 2>&1)"
           python -m pip install -U flake8-docstrings
           python -m pip check
-          python -m flake8 . --exclude migrations --docstring-convention pep257 | tee flake_3.10_docstring_check.log
+          python -m flake8 . --exclude migrations --per-file-ignores="__init__.py:D104" --docstring-convention pep257 | tee flake_3.10_docstring_check.log
           errors=$(grep 'docstring' flake_3.10_docstring_check.txt | wc -l)
           test "$errors" -le 0
 

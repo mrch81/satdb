@@ -16,8 +16,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "satdb.settings")
 django.setup()
 
 from satapp.models import Satellite  # noqa: E402
-from satdb.settings import (FETCH_TLE_FREQUENCY,  # noqa: E402
-                            SATELLITE_FEED_URL)
+from satdb.settings import FETCH_TLE_FREQUENCY  # noqa: E402
+from satdb.settings import SATELLITE_FEED_URL
 
 logger = logging.getLogger(__name__)
 

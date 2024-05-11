@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" Routing fpr websocket """
+"""Routing fpr websocket."""
 
 from django.urls import path
 

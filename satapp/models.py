@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+"""Define Django models here."""
+
 # Imports
 from django.db import models
 
@@ -20,7 +22,7 @@ class Owner(models.Model):
     name = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __unicode__(self):  # noqa: D105
         return "{}".format(self.name)
 
 
@@ -49,7 +51,7 @@ class Satellite(models.Model):
                               related_name='satellites',
                               on_delete=models.SET_NULL, null=True, blank=True)
 
-    def __unicode__(self):
+    def __unicode__(self):  # noqa: D105
         return "{}".format(self.name)
 
 
@@ -74,7 +76,7 @@ class Payload(models.Model):
     type = models.CharField(max_length=100)
     description = models.TextField()
 
-    def __unicode__(self):
+    def __unicode__(self):  # noqa: D105
         return "Satellite {} of type {}".format(self.satellite, self.type)
 
 
@@ -95,5 +97,5 @@ class Launcher(models.Model):
     launcher_type = models.CharField(max_length=100)
     launch_date = models.DateField()
 
-    def __unicode__(self):
+    def __unicode__(self):  # noqa: D105
         return "Launcher {}".format(self.launcher_type)

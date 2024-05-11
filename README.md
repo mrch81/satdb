@@ -7,18 +7,20 @@ The objective of the project is to exploit:
 - GraphQL querying capabilities 
 - WebSocket subscriptions for updates
 
+> Given more resources, this may evolve into a comprensive Satellelite Database Management System.
+
 ## Features
 
 | Type | Description |
 | ------ | ------ |
-| Backend | Django backend with GraphQL API framework using graphene and graphene-django |
+| Backend | Django backend with GraphQL API framework using graphene and graphene-django. |
 | Fetch Service | a service that periodically fetches TLE information from an Open API. Celery could also be used. |
-| Frontend | TODO: working on it. I haven't yet decided whether to use Angular or React |
+| Frontend | TODO: working on it. I haven't yet decided whether to use Angular or React. |
 | CI Gitlab | CI pipelines for QA and testing on [Gitlab](https://gitlab.com/webfw1/satdb) |
-| CI Github | Actions for QA and testing on Github |
-| Containerisation | a dockerfile and a docker-compose.yml |
-| Fixtures | fixtures to generate initial data for tests |
-| Unit Testing | Of course! |
+| CI Github | Actions for QA and testing on Github. |
+| Containerisation | a dockerfile and a docker-compose.yml. |
+| Fixtures | fixtures to generate initial data for tests. |
+| Unit Testing | Of course! Fetcher service unit tests are yet to be implemented.|
 | Package Management | Package and dependencies installation using Poetry as well as pip. |
 | Database | A default sqlite database. Postgresql is recommended. |
 
@@ -107,6 +109,10 @@ The objective of the project is to exploit:
         query {
             allSatellites {
                 name
+                satId
+                tleDate
+                line1
+                line2
                 owner {
                     name
                 }
@@ -118,22 +124,28 @@ The objective of the project is to exploit:
 
     ```graphql
         mutation {
-            createSatellite(name: "James Webb", ownerId: <owner_pk>) {
+            createSatellite(name: "James Webb",
+                            satId: 22222,
+                            tleDate: "2024-05-11",
+                            line1: "AZERTY",
+                            line2: "QWERTY") {
                 satellite {
+                    id
                     name
-                    owner {
-                        name
-                    }
+                    satId
+                    tleDate
+                    line1
+                    line2
                 }
             }
         }
     ```
 
-2. **Mutation: update a satellite:** 
+2. **Mutation: update a satellite name:** 
 
     ```graphql
         mutation {
-            updateSatellite(id: <satellite_pk>, name: "Updated Hubble") {
+            updateSatellite(id: <satellite_pk>, name: "YAMX") {
                 satellite {
                     name
                 }
@@ -141,7 +153,7 @@ The objective of the project is to exploit:
         }
     ```
 
-2. **Mutation: get payloads:** 
+2. **Query: get payloads:** 
 
     ```graphql
         query {

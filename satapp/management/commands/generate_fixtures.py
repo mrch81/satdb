@@ -63,6 +63,7 @@ class Command(BaseCommand):
             satellites = []
             today = datetime.datetime.today()
             dates = [today - datetime.timedelta(days=x) for x in range(10)]
+            dates = ["2024-05-11", "2024-04-10", "2022-03-15", "2023-12-12"]
             for i in range(num):
                 satellites.append({
                     "model": "satapp.satellite",
@@ -70,10 +71,10 @@ class Command(BaseCommand):
                     "fields": {
                         "name": f"{fake.word().capitalize()} Satellite",
                         "owner": randint(1, owners_count),
-                        "sat_id": randint(11111, num_entries),
+                        "sat_id": randint(11111, 99999),
                         "tle_date": choice(dates),
-                        "Line1": choice(L1),
-                        "Line2": choice(L2),
+                        "line1": choice(L1),
+                        "line2": choice(L2),
                     }
                 })
             return satellites

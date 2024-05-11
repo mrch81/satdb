@@ -4,7 +4,7 @@
 
 import datetime
 import logging
-from typing import Any, Dict, List
+from typing import Optional, Any, Dict, List
 
 # Imports
 import graphene
@@ -271,8 +271,8 @@ class UpdateOwner(graphene.Mutation):
     def mutate(self,
                info: graphene.ResolveInfo,
                id: int,
-               name: str = None,
-               country: str = None) -> graphene.Mutation:
+               name: Optional[str] = None,
+               country: Optional[str] = None) -> graphene.Mutation:
         """Mutation method to update Owner.
 
         Args:
@@ -341,9 +341,9 @@ class UpdateLauncher(graphene.Mutation):
     def mutate(self,
                info: graphene.ResolveInfo,
                id: int,
-               launcher_type: str = None,
-               launch_date: datetime.date = None,
-               satellite_ids: List[int] = None) -> graphene.Mutation:
+               launcher_type: Optional[str] = None,
+               launch_date: Optional[datetime.date] = None,
+               satellite_ids: Optional[List[int]] = None) -> graphene.Mutation:
         """Mutation method to update Launcher.
 
         Args:
@@ -384,7 +384,7 @@ class CreatePayload(graphene.Mutation):
                provider: str,
                satellite_id: int,
                type: str,
-               description: str = None) -> graphene.Mutation:
+               description: Optional[str] = None) -> graphene.Mutation:
         """Mutation method to create payload.
 
         Args:
@@ -421,10 +421,10 @@ class UpdatePayload(graphene.Mutation):
     def mutate(self,
                info: graphene.ResolveInfo,
                id: int,
-               provider: str = None,
-               satellite_id: int = None,
-               type: str = None,
-               description: str = None) -> graphene.Mutation:
+               provider: Optional[str] = None,
+               satellite_id: Optional[int] = None,
+               type: Optional[str] = None,
+               description: Optional[str] = None) -> graphene.Mutation:
         """Mutation method to update payload.
 
         Args:

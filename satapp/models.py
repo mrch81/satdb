@@ -58,7 +58,7 @@ class Payload(models.Model):
     Represents payload of the satellite.
 
     Attributes:
-        provider (CharField): Name of the provider of the payload. 120 chars maximum.
+        provider (CharField): Name of the provider. 120 chars maximum.
         satellite (ForeignKey): A foreign key linking to the Satellite model.
         type (CharField): Name of the satellite. 120 chars maximum.
         description (TextField): A text describing the payload.

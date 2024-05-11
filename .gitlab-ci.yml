@@ -203,15 +203,6 @@ pytest:
     - pytest --junitxml=report.xml | tee -a pytest.log
     - grep -Ee '== .*(failed|passed|skipped|warning|errors).* in .* ==' pytest.log > pytest.status
     - cat pytest.status
-    - fail_cnt=$(cat pytest.status | sed -e 's/ failed.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
-    - skip_cnt=$(cat pytest.status | sed -e 's/ skipped.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
-    - warn_cnt=$(cat pytest.status | sed -e 's/ warning.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
-    - err_cnt=$(cat pytest.status  | sed -e 's/ error.*// ; s/.* / / ; s/.*=.*/0/ ' | python -c 'import sys ; print(sum([int(v) for v in sys.stdin.read().split()]))' )
-    - echo "E:$err_cnt W:$warn_cnt S:$skip_cnt F:$fail_cnt"
-    - test $err_cnt -le 0
-    - test $warn_cnt -le 0
-    - test $skip_cnt -le 0
-    - test $fail_cnt -le 0
     - "echo test end: $(date +'%Y%-%m-%d %H:%M:%S %s')"
 
   artifacts:

@@ -54,22 +54,22 @@ def test_query_all_satellites():
 def test_create_satellite_mutation():
     """Test create mutation for Satellite model."""
     client = Client(schema)
-    owner1 = Owner.objects.create(name="NASA", country="USA")
-
-    satellite1 = Satellite.objects.create(id=1,
-                                          name="Hubble",
-                                          owner=owner1)
-
-    launcher1 = Launcher.objects.create(launcher_type="Falcon 9",
-                                        launch_date=date(2024, 3, 4))
-
-    launcher1.satellites.add(satellite1)
-
+    owner1 = Owner.objects.create(name="ESA", country="FRANCE")
     resp = client.execute('''
         mutation {
-            createSatellite(name: "James Webb", ownerId: %s) {
+            createSatellite(name: "James Webb",
+                            satId: 22222,
+                            tleDate: "2024-05-11",
+                            line1: "AZERTY",
+                            line2: "QWERTY",
+                            ownerId: %s) {
                 satellite {
+                    id
                     name
+                    satId
+                    tleDate
+                    line1
+                    line2
                     owner {
                         name
                     }
@@ -77,9 +77,10 @@ def test_create_satellite_mutation():
             }
         }
     ''' % owner1.pk)
+    logger.debug("Create satellite response : %r", resp)
     satellite = resp['data'].get('createSatellite').get('satellite')
     assert satellite['name'] == 'James Webb'
-    assert satellite['owner']['name'] == 'NASA'
+    assert satellite['owner']['name'] == 'ESA'
 
 
 @pytest.mark.django_db
@@ -119,6 +120,11 @@ def test_query_all_payloads():
     satellite1 = Satellite.objects.create(id=1,
                                           name="Hubble",
                                           owner=owner1)
+
+    payload1 = Payload.objects.create(provider="SpaceX",  # noqa: F841
+                                      satellite=satellite1,
+                                      type="Camera",
+                                      description="30M camera")
 
     launcher1 = Launcher.objects.create(launcher_type="Falcon 9",
                                         launch_date=date(2024, 3, 4))
@@ -262,7 +268,7 @@ def test_query_all_owners():
         }
     ''')
     owners = resp['data'].get('allOwners')
-    assert len(owners) == 2
+    assert len(owners) == 1
     assert owners[0]['name'] == 'NASA'
     assert owners[0]['country'] == 'USA'
 

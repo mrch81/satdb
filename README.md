@@ -4,10 +4,18 @@ Satdb is a lightweight and type-safe [Django]((https://www.djangoproject.com/)) 
 
 The objective of the project is to exploit:
 
-- GraphQL querying capabilities 
+- GraphQL querying capabilities
 - WebSocket subscriptions for updates
 
-> Given more resources, this may evolve into a comprensive Satellelite Database Management System.
+> Given more resources, this may evolve into a comprensive
+> Satellelite Database Management System.
+> For now, only the Satellite table is populated using
+> NASA's TLE API which is set in django settings.
+> The Payload, Launcher and Owner tables are empty.
+> However for test purpose they can be populated using
+> the fixtures provided with the code.
+
+---
 
 ## Features
 
@@ -42,34 +50,51 @@ The objective of the project is to exploit:
 - [Docker Compose](https://docs.docker.com/compose/install/).
 - [Dependencies](pyproject.toml)
 
+## Variables
+
+1. Fetch service uses the url set in following variable in django settings to fetch
+satellite information.
+
+```sh
+SATELLITE_FEED_URL = os.environ.get(
+                        "SATELLITE_FEED_URL",
+                        "https://data.ivanstanojevic.me/api/tle/?search=yam-")
+```
+
+2. Fetch frequency is set to 1 hour in django settings.
+
+```sh
+FETCH_TLE_FREQUENCY = 3600
+```
+
 ### Installation - Local
 
 1. **Install dependencies:**
-    
+
     ```sh
     cd satdb
     poetry install
     ```
 
-3. **Run migrations:**
+2. **Run migrations:**
 
     ```sh
     poetry run python manage.py migrate
     ```
 
-4. **Run the backend:**
+3. **Run the backend:**
 
     ```sh
     poetry run python manage.py runserver 0.0.0.0:8000
     ```
 
-5. **Run the fetch service:**
+4. **Run the fetch service:**
 
     ```sh
-    poetry run python fetch_service\tle_updater.py 
+    poetry run python fetch_service\tle_updater.py
     ```
 
-6. **Query data in django admin page:**
+5. **Query data in django admin page:**
 
     Go to your internet browser and consult: http:\\localhost:8000\graphql\
 
@@ -81,7 +106,7 @@ The objective of the project is to exploit:
     ```sh
     docker build -t satdb .
     ```
-2. **Launch Docker Compose:** 
+2. **Launch Docker Compose:**
 
     ```sh
     docker-compose up
@@ -92,16 +117,22 @@ The objective of the project is to exploit:
 1. **For Local environment:**
 
     ```sh
-    poetry run python manage.py loaddata
+    poetry run python manage.py loaddata owners
+	poetry run python manage.py loaddata satellites
+	poetry run python manage.py loaddata payloads
+	poetry run python manage.py loaddata launchers
     ```
-2. **For Docker environment:** 
+2. **For Docker environment:**
 
     ```sh
-    docker exec <container_id_or_name> bash -c "python /code/manage.py loaddata"
+	docker exec <container_id_or_name> bash -c "python /code/manage.py loaddata owners"
+    docker exec <container_id_or_name> bash -c "python /code/manage.py loaddata satellites"
+    docker exec <container_id_or_name> bash -c "python /code/manage.py loaddata payloads"
+    docker exec <container_id_or_name> bash -c "python /code/manage.py loaddata launchers"
     ```
 
 
-##  Query examples
+##  GraphQL Query examples
 
 1. **Query: get all satellites:**
 
@@ -120,7 +151,7 @@ The objective of the project is to exploit:
         }
     ```
 
-2. **Mutation: create a satellite:** 
+2. **Mutation: create a satellite:**
 
     ```graphql
         mutation {
@@ -141,7 +172,7 @@ The objective of the project is to exploit:
         }
     ```
 
-2. **Mutation: update a satellite name:** 
+2. **Mutation: update a satellite name:**
 
     ```graphql
         mutation {
@@ -153,7 +184,7 @@ The objective of the project is to exploit:
         }
     ```
 
-2. **Query: get payloads:** 
+2. **Query: get payloads:**
 
     ```graphql
         query {
@@ -167,8 +198,8 @@ The objective of the project is to exploit:
             }
         }
     ```
-    
-2. **Mutation: create payload for a satellite:** 
+
+2. **Mutation: create payload for a satellite:**
 
     ```graphql
         mutation {
@@ -190,7 +221,7 @@ The objective of the project is to exploit:
           }
     ```
 
-2. **Mutation: update payload for a satellite:** 
+2. **Mutation: update payload for a satellite:**
 
     ```graphql
         mutation {

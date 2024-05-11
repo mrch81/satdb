@@ -78,8 +78,12 @@ docstring_check:
     - pip freeze > pipfreeze.flake_3.12_docstring_check.txt
     - pip check
     - python -m flake8 . --exclude migrations --per-file-ignores="__init__.py:D104" --docstring-convention pep257 | tee flake_3.12_docstring_check.log
-    - errors=$(grep 'docstring' flake_3.12_docstring_check.txt | wc -l)
-    - test "$errors" -le 0
+  artifacts:
+    when: on_failure
+    paths:
+        - pipfreeze.flake_3.12_docstring_check.txt
+        - flake_3.12_docstring_check.log
+    expire_in: 1 week
 
 mypy:
   stage: lint

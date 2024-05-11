@@ -2,8 +2,9 @@
 
 """GraphQL schema for satapp."""
 
+import datetime
 import logging
-from typing import Any, Dict, List, date
+from typing import Any, Dict, List
 
 # Imports
 import graphene
@@ -173,7 +174,7 @@ class CreateSatellite(graphene.Mutation):
                sat_id: int,
                line1: str,
                line2: str,
-               tle_date: date,
+               tle_date: datetime.date,
                owner_id: int) -> graphene.Mutation:
         """Mutation method to create Satellite.
 
@@ -306,7 +307,7 @@ class CreateLauncher(graphene.Mutation):
                info: graphene.ResolveInfo,
                satellite_ids: List[int],
                launcher_type: str,
-               launch_date: date) -> graphene.Mutation:
+               launch_date: datetime.date) -> graphene.Mutation:
         """Mutation method to create Launcher.
 
         Args:
@@ -341,7 +342,7 @@ class UpdateLauncher(graphene.Mutation):
                info: graphene.ResolveInfo,
                id: int,
                launcher_type: str = None,
-               launch_date: date = None,
+               launch_date: datetime.date = None,
                satellite_ids: List[int] = None) -> graphene.Mutation:
         """Mutation method to update Launcher.
 

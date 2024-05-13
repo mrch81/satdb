@@ -1,19 +1,32 @@
 version: "3"
 
 services:
-  backend:
+  backend_dj:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - ./backend_dj:/code
     ports:
       - "8000:8000"
 
   tle_fetcher:
     depends_on:
-      - backend
+      - backend_dj
     build: .
     command: python /code/fetch_service/tle_updater.py
     volumes:
-      - .:/code
+      - ./tle_fetcher:/code
+      
+  frontend:
+    build:
+      context: ./satfront
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend_ng:/code
+    depends_on:
+      - backend_dj
+    environment:
+      - API_URL=http://backend_dj:8000
+    command: npm start
 

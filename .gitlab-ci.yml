@@ -105,7 +105,7 @@ mypy:
     expire_in: 1 week
 
 htmlhint:
-  image: node:latest
+  image: node:22
   tags:
     - gitlab-org-docker
   stage: lint
@@ -116,7 +116,7 @@ htmlhint:
     - htmlhint app/
 
 eslint:
-  image: node:latest
+  image: node:22
   tags:
     - gitlab-org-docker
   stage: lint

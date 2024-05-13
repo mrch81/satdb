@@ -8,12 +8,11 @@ from django.http import HttpRequest, HttpResponse
 
 
 class DisableCSRF:
-    """Disable CSRF to allow the front to access data.
-    This should be temporary."""
+    """Disable CSRF to allow the front to access data (TODO temporary)."""
 
     def __init__(self,
                  get_response: Callable[[HttpRequest], HttpResponse]) -> None:
-        """Constructor method to disable CSRF.
+        """Disable CSRF constructor method.
 
         Args:
             get_response (Callable): a typical middleware handling callable

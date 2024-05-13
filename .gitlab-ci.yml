@@ -15,9 +15,6 @@ cache:
 
 image: python:3.12
 
-before_script:
-  - python --version ; pip --version  # For debugging
-
 
 # ############################################################################
 # lint stage

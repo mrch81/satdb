@@ -45,6 +45,7 @@ The objective of the project is to exploit:
 - Add Nginx layer to serve the frontend.
 - Refactor Dockerfiles.
 - Frontend (./satfront) could be in a separate code base.
+- Handle authentification, permissions and security.
 
 ---
 
@@ -67,8 +68,8 @@ The objective of the project is to exploit:
 - [Python](https://www.python.org/) 3.10.*
 - [Django](https://www.djangoproject.com/) 4.2.*
 - [Angular](https://angular.io/guide/setup-local) 17.3.*
-- [Node] (https://nodejs.org/en/blog/announcements/v22-release-announce) 22.0.0
-- [NPM] (https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 10.7.0
+- [Node](https://nodejs.org/en/blog/announcements/v22-release-announce) 22.0.0
+- [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 10.7.0
 - [Docker](https://www.docker.com/).
 - [Docker Compose](https://docs.docker.com/compose/install/).
 - [Backend dependencies](pyproject.toml)
@@ -122,7 +123,7 @@ FETCH_TLE_FREQUENCY = 3600
 
 ##### Fronted
   
-1. **Install node.js v22.1.0**
+1. **Install node.js v22.0.0**
 
 2. **Install packages and launch**
 
@@ -171,11 +172,11 @@ FETCH_TLE_FREQUENCY = 3600
 
 After installation is done, 
 
-- **To query data in django admin page:** http:\\localhost:8000\graphql\
+**To make Graphql queries:** ```sh http:\\localhost:8000\graphql\ ```
 
-- **To consult django admin page:** http:\\localhost:8000\admin\ (login: admin, password: satadmin)
+**To consult django admin page:** ```sh http:\\localhost:8000\admin\ (login: admin, password: satdbadmin) ```
 
-- **To view frontend:** http:\\localhost:4200\
+**To view frontend:** ```sh http:\\localhost:4200\ ```
 
 ---
 

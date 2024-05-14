@@ -15,9 +15,6 @@ cache:
 
 image: python:3.12
 
-before_script:
-  - python --version ; pip --version  # For debugging
-
 
 # ############################################################################
 # lint stage
@@ -104,6 +101,43 @@ mypy:
         - mypy_3.12_check.log
     expire_in: 1 week
 
+htmlhint:
+  image: node:22
+  tags:
+    - gitlab-org-docker
+  stage: lint
+  allow_failure: false
+  script:
+    - echo "PERFORM STATIC CODE ANALYSIS OF HTML FILES."
+    - npm install -g htmlhint@0.11.0
+    - htmlhint app/
+
+eslint:
+  image: node:22
+  tags:
+    - gitlab-org-docker
+  stage: lint
+  allow_failure: false
+  script:
+    - echo "ES LINTS."
+    - npm install eslint eslint-config-google --legacy-peer-deps
+    - $(npm bin)/eslint --format table app > eslint.log || true
+    - head -50 eslint.log
+    - total_errors=$(cat eslint.log | grep error -c || true) ;  echo "TOTAL ERRORS $total_errors"
+    - test $total_errors -le 0
+
+csslint:
+  stage: lint
+  tags:
+    - gitlab-org-docker
+  allow_failure: true
+  dependencies: []
+  script:
+    - echo "PERFORM CSS LINT"
+    - touch csslint.log
+    - "csslint . > csslint.log || true"
+    - echo "=== CSSLint issues" ; cat csslint.log || true
+
 # shellcheck:
 #   stage: lint
 #   image: koalaman/shellcheck-alpine:latest
@@ -117,41 +151,7 @@ mypy:
 #   script:
 #     - echo "This job checks shell scripts for potential errors."
 #     - git ls-files --exclude='*.sh' --ignored -c -z | xargs -0r shellcheck
-
-# htmlhint:
-#   stage: lint
-#   tags:
-#     - gitlab-org-docker
-#   allow_failure: true
-#   dependencies: []
-#   script:
-#     - echo "PERFORM STATIC CODE ANALYSIS OF HTML FILES"
-#     - touch htmlhint.log
-#     - "htmlhint . > htmlhint.log || true"
-#     - echo "=== first 100 lines of issues" ; cat htmlhint.log || true
-#   artifacts:
-#     when: on_failure
-#     paths:
-#         - htmlhint.log
-#     expire_in: 1 week
 # 
-# csslint:
-#   stage: lint
-#   tags:
-#     - gitlab-org-docker
-#   allow_failure: true
-#   dependencies: []
-#   script:
-#     - echo "PERFORM CSS LINT"
-#     - touch csslint.log
-#     - "csslint . > csslint.log || true"
-#     - echo "=== CSSLint issues" ; cat csslint.log || true
-#   artifacts:
-#     when: on_failure
-#     paths:
-#         - csslint.log
-#     expire_in: 1 week
-
 
 # ############################################################################
 # Test stage

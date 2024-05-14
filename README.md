@@ -24,14 +24,14 @@ The objective of the project is to exploit:
 | ------ | ------ |
 | Backend | Django backend with GraphQL API framework using graphene and graphene-django. |
 | Fetch Service | a service that periodically fetches TLE information from an Open API. Celery could also be used. |
-| Frontend | TODO: working on it. I haven't yet decided whether to use Angular or React. |
+| Frontend | Angular/Typescript/Bootstrap frontend displaying the satellite table alongwith TLE info. |
 | CI Gitlab | CI pipelines for QA and testing on [Gitlab](https://gitlab.com/webfw1/satdb) |
-| CI Github | Actions for QA and testing on Github. |
-| Containerisation | a dockerfile and a docker-compose.yml. |
+| CI Github | Actions for QA and testing on Github. (**To be tested on github**)|
+| Containerisation | a dockerfile and a docker-compose.yml. (Dev mode, without nginx) |
 | Fixtures | fixtures to generate initial data for tests. |
 | Unit Testing | Of course! Fetcher service unit tests are yet to be implemented.|
 | Package Management | Package and dependencies installation using Poetry as well as pip. |
-| Database | A default sqlite database. Postgresql is recommended. |
+| Database | A default sqlite database. Postgresql is recommended for production. |
 
 ---
 

@@ -24,15 +24,15 @@ The objective of the project is to exploit:
 | Type | Description |
 | ------ | ------ |
 | Backend | Django with GraphQL API framework using graphene and graphene-django. |
-| Fetch Service | a service to periodically fetch TLE information from an Open API.  |
-| Frontend | Angular/Typescript/Bootstrap frontend displaying the satellite table alongwith TLE info. |
+| Fetch Service | A service to periodically fetch TLE information from an Open API. |
+| Frontend | Minimalist frontend in Angular/Typescript/Bootstrap to display the satellite table and TLE. |
 | CI Gitlab | CI pipelines for QA and testing on [Gitlab](https://gitlab.com/webfw1/satdb) |
 | CI Github | Actions for QA and testing on Github. (**To be tested on github**)|
-| Containerisation | a dockerfile and a docker-compose.yml. (Dev mode, without nginx) |
-| Fixtures | fixtures to generate initial data for tests. |
-| Unit Testing | Of course! Fetcher service unit tests are yet to be implemented.|
-| Package Management | Package and dependencies installation using Poetry as well as pip. |
-| Database | A default sqlite database.  |
+| Containerisation | Two dockerfiles and a docker-compose.yml. (Dev mode, without nginx) |
+| Fixtures | Four fixtures to generate initial data for tests. |
+| Unit Testing | Of course! (TODO: fetcher service unit tests are commented, WIP).|
+| Package Management | Packages and dependencies installation using Poetry as well as pip. |
+| Database | A default sqlite database. |
 
 
 ## Recommendations for Production environment
@@ -54,16 +54,25 @@ The objective of the project is to exploit:
 
 ---
 
+## Frontend demo
+
+![image description](docs/frontend_demo.png)
+
+---
+
 #  Installation
 
 ## Project Requirements
 
 - [Python](https://www.python.org/) 3.10.*
 - [Django](https://www.djangoproject.com/) 4.2.*
-- [Angular](https://www.djangoproject.com/) 4.2.*
+- [Angular](https://angular.io/guide/setup-local) 17.3.*
+- [Node] (https://nodejs.org/en/blog/announcements/v22-release-announce) 22.0.0
+- [NPM] (https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 10.7.0
 - [Docker](https://www.docker.com/).
 - [Docker Compose](https://docs.docker.com/compose/install/).
-- [Dependencies](pyproject.toml)
+- [Backend dependencies](pyproject.toml)
+- [Frontend dependencies](satfront/package.json)
 
 ## Variables
 

@@ -8,13 +8,14 @@ The objective of the project is to exploit:
 - WebSocket subscriptions
 - Multi-container architecture with docker compose
 
-> This minimalist project be scaled into a comprehensive
-> Satellelite Database Management System, in time.
-> For now, the Satellite table is populated using
-> NASA's TLE API configured in django settings. 
-> The other tables (Payload, Launcher and Owner) are empty.
-> However for test purpose they can be populated using
-> the fixtures provided with the code.
+> In time, with resources and a bit more effort, 
+> this minimalist project can be scaled into a comprehensive
+> Satellelite Database Management System.
+> For now, the Satellite table is populated with YAM satellites
+> using NASA's TLE API.
+> The other tables (Payload, Launcher and Owner) are empty, but
+> for test purpose they can be populated using
+> the fixtures provided in the code.
 
 ---
 
@@ -22,8 +23,8 @@ The objective of the project is to exploit:
 
 | Type | Description |
 | ------ | ------ |
-| Backend | Django backend with GraphQL API framework using graphene and graphene-django. |
-| Fetch Service | a service that periodically fetches TLE information from an Open API. Celery could also be used. |
+| Backend | Django with GraphQL API framework using graphene and graphene-django. |
+| Fetch Service | a service to periodically fetch TLE information from an Open API.  |
 | Frontend | Angular/Typescript/Bootstrap frontend displaying the satellite table alongwith TLE info. |
 | CI Gitlab | CI pipelines for QA and testing on [Gitlab](https://gitlab.com/webfw1/satdb) |
 | CI Github | Actions for QA and testing on Github. (**To be tested on github**)|
@@ -31,7 +32,19 @@ The objective of the project is to exploit:
 | Fixtures | fixtures to generate initial data for tests. |
 | Unit Testing | Of course! Fetcher service unit tests are yet to be implemented.|
 | Package Management | Package and dependencies installation using Poetry as well as pip. |
-| Database | A default sqlite database. Postgresql is recommended for production. |
+| Database | A default sqlite database.  |
+
+
+## Recommendations for Production environment
+
+- Use celery to fetch the data from TLE API.
+- TLE API is paginated. Recursive fetching needed to fetch all the satellites.
+- Use Postgresql instead of sqlite.
+- Manage CSRF token. For dev purpose, it is disabled on graphql queries.
+- Configure CORS_ALLOWED_ORIGINS in ./satdb/settings.py
+- Add Nginx layer to serve the frontend.
+- Refactor Dockerfiles.
+- Frontend (./satfront) could be in a separate code base.
 
 ---
 
@@ -47,6 +60,7 @@ The objective of the project is to exploit:
 
 - [Python](https://www.python.org/) 3.10.*
 - [Django](https://www.djangoproject.com/) 4.2.*
+- [Angular](https://www.djangoproject.com/) 4.2.*
 - [Docker](https://www.docker.com/).
 - [Docker Compose](https://docs.docker.com/compose/install/).
 - [Dependencies](pyproject.toml)
@@ -69,6 +83,8 @@ FETCH_TLE_FREQUENCY = 3600
 ```
 
 ### Installation - Local
+
+##### Backend
 
 1. **Install dependencies:**
 
@@ -95,11 +111,19 @@ FETCH_TLE_FREQUENCY = 3600
     poetry run python fetch_service\tle_updater.py
     ```
 
-5. **Query data in django admin page:**
+##### Fronted
+  
+1. **Install node.js v22.1.0**
 
-    Go to your internet browser and consult: http:\\localhost:8000\graphql\
+2. **Install packages and launch**
 
-
+    ```sh
+    npm install -g @angular/cli
+    cd satfront
+    npm install
+    ng serve
+    ```
+    
 ### Installation - Docker
 
 1. **Build the Docker image:**
@@ -132,6 +156,19 @@ FETCH_TLE_FREQUENCY = 3600
     docker exec <container_id_or_name> bash -c "python /code/manage.py loaddata launchers"
     ```
 
+---
+
+#  Usage
+
+After installation is done, 
+
+- **To query data in django admin page:** http:\\localhost:8000\graphql\
+
+- **To consult django admin page:** http:\\localhost:8000\admin\ (login: admin, password: satadmin)
+
+- **To view frontend:** http:\\localhost:4200\
+
+---
 
 ##  GraphQL Query examples
 

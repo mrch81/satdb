@@ -1,0 +1,29 @@
+<div *ngIf="loading">
+  <p>Loading...</p>
+</div>
+<div *ngIf="error">
+  <p>Error! Sorry! I must leave you here now! You'll have to investigate :(</p>
+</div>
+<div *ngIf="!loading">
+  <table class="table table-striped table-hover font-monospace">
+    <thead class="table-dark text-center">
+	  <tr>
+        <th scope="col">NAME</th>
+        <th scope="col">Satellite ID</th>
+        <th scope="col">TLE - LINE1</th>
+		<th scope="col">TLE - LINE2</th>
+		<th scope="col">TLE UPDATED ON</th>
+      </tr>
+	</thead>
+    <tbody class="fs-6" *ngFor="let item of items">
+      <tr class="table-success">
+        <th scope="row">{{item.name}}</th>
+        <td>{{item.satId}}</td>
+        <td>{{item.line1}}</td>
+		<td>{{item.line2}}</td>
+        <td>{{item.tleDate | date: 'dd/MM/yyyy HH:mm'}}</td>
+      </tr>	
+	</tbody>
+  </table>  
+</div>
+

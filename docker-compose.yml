@@ -1,11 +1,9 @@
-version: "3"
-
 services:
   backend_dj:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./backend_dj:/code
+      - .:/code
     ports:
       - "8000:8000"
 
@@ -15,18 +13,16 @@ services:
     build: .
     command: python /code/fetch_service/tle_updater.py
     volumes:
-      - ./tle_fetcher:/code
+      - .:/code
       
   frontend:
     build:
       context: ./satfront
+      dockerfile: Dockerfile
     ports:
       - "4200:4200"
     volumes:
-      - ./frontend_ng:/code
-    depends_on:
-      - backend_dj
+      - .:/frontend
     environment:
       - API_URL=http://backend_dj:8000
-    command: npm start
-
+    command: ng serve --host 0.0.0.0

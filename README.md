@@ -171,13 +171,13 @@ FETCH_TLE_FREQUENCY = 3600
 
 #  Usage
 
-After installation is done, 
+After installation is done:
 
-**To make Graphql queries:**  <http:\\localhost:8000\graphql\>
+- **To make Graphql queries:**  <http:\\localhost:8000\graphql\>
 
-**To consult django admin page:**  <http:\\localhost:8000\admin\> (login: admin, password: satdbadmin)
+- **To consult django admin page:**  <http:\\localhost:8000\admin\> (login: admin, password: satdbadmin)
 
-**To view frontend:** <http:\\localhost:4200\>
+- **To view frontend:** <http:\\localhost:4200\>
 
 ---
 

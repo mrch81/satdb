@@ -33,6 +33,7 @@ The objective of the project is to exploit:
 | Unit Testing | Of course! (TODO: fetcher service unit tests are commented, WIP).|
 | Package Management | Packages and dependencies installation using Poetry as well as pip. |
 | Database | A default sqlite database. |
+| Djang Admin | Django admin views. |
 
 
 ## Recommendations for Production environment
@@ -170,13 +171,13 @@ FETCH_TLE_FREQUENCY = 3600
 
 #  Usage
 
-After installation is done, 
+After installation is done:
 
-**To make Graphql queries:** ```sh http:\\localhost:8000\graphql\ ```
+- **To make Graphql queries:**  <http:\\localhost:8000\graphql\>
 
-**To consult django admin page:** ```sh http:\\localhost:8000\admin\ (login: admin, password: satdbadmin) ```
+- **To consult django admin page:**  <http:\\localhost:8000\admin\> (login: admin, password: satdbadmin)
 
-**To view frontend:** ```sh http:\\localhost:4200\ ```
+- **To view frontend:** <http:\\localhost:4200\>
 
 ---
 
